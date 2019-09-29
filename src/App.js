@@ -36,7 +36,7 @@ function App() {
           <Calendar setDate={setDate}/>
         </p>
         <p className="App-float-right">
-       <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate}/>
+       <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate}/>
         </p>
       </header>
     </div>

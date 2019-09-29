@@ -13,6 +13,7 @@ export default class TestApi extends React.Component {
             durations: [],
             selectedTypeOption: null,
             selectedDurationOption: null,
+            holiday : null
         };
     }
 
@@ -74,9 +75,20 @@ export default class TestApi extends React.Component {
         this.setState({ selectedDurationOption });
     }
 
-    updateHoliday(holiday) {
+    updateHoliday() {
+        const {holiday, selectedDurationOption,selectedTypeOption}=this.state;
         const apiBaseUrl = `http://192.168.1.250:10202`;
-        const urlStr = apiBaseUrl + `/api/datestable/UpdateHoliday/` + holiday.holidayID + `/` + this.props.toDate;
+        const valueType=selectedTypeOption && selectedTypeOption.value;
+        const valueDuration=selectedDurationOption && selectedDurationOption.value;
+        var urlStr= '';
+        if (holiday.holidayID==-1){
+             urlStr = apiBaseUrl + `/api/datestable/UpdateHoliday/` + holiday.holidayID + `/` + moment(this.props.selectedDate).format('MM-DD-YYYY')+'/'+ holiday.userID
+        
+        }
+        else{
+             urlStr = apiBaseUrl + `/api/datestable/UpdateHoliday/` + holiday.holidayID + `/` + valueType+'/'+ valueDuration+'/'
+        
+        }
         const test = '';
         fetch(urlStr)
             .then(
@@ -112,13 +124,19 @@ export default class TestApi extends React.Component {
                     <td>{userDataRow.user.firstName}</td>
                     {userDataRow.userRow.map((holiday, index) => {
 
-                        return holiday.holidayID == -1 ? <td>{'-'}</td> : <td><button onClick={() => this.props.setDate(moment(holiday.holDate),null,null)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </button></td>
+                        return holiday.holidayID == -1 ? <td>{'-'}</td> : <td><button onClick={() => this.setHoliday(holiday)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </button></td>
                     }
 
                     )}
                 </tr>
             )
         })
+    }
+
+    setHoliday (holiday){
+
+        this.setState({selectedTypeOption : holiday.holType, selectedDurationOption : holiday.duration, holiday : holiday});
+        this.props.setDate(moment(holiday.holDate,null,null));
     }
   
     render() {
@@ -136,7 +154,7 @@ export default class TestApi extends React.Component {
             return (
                 <span>
 
-<button onClick={(e) => this.handleClick(e)}>
+<button onClick={() => this.updateHoliday()}>
         Click me
       </button>
                     <table id='users'>
@@ -154,6 +172,7 @@ export default class TestApi extends React.Component {
                             ></Select></td>
                             <td><Select
                                 options={selectDurations}
+                                value={selectedDurationOption}
                                 onChange={this.handleDurationChange}
                             ></Select></td></tr>
                     </tbody></table>

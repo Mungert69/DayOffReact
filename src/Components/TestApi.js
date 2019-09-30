@@ -1,8 +1,27 @@
 import React, { useState } from 'react';
 import moment from "moment";
 import Select from 'react-select';
-
+const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      borderBottom: '1px dotted pink',
+      color: state.isSelected ? 'red' : 'blue',
+      padding: 20,
+    }),
+    control: () => ({
+      // none of react-select's styles are passed to <Control />
+      width: 100,
+    }),
+    singleValue: (provided, state) => {
+      const opacity = state.isDisabled ? 0.5 : 1;
+      const transition = 'opacity 300ms';
+  
+      return { ...provided, opacity, transition };
+    }
+  }
 export default class TestApi extends React.Component {
+
+
     constructor(props) {
         super(props);
         this.state = {
@@ -13,7 +32,7 @@ export default class TestApi extends React.Component {
             durations: [],
             selectedTypeOption: null,
             selectedDurationOption: null,
-            holiday : null
+            holiday: null
         };
     }
 
@@ -76,18 +95,18 @@ export default class TestApi extends React.Component {
     }
 
     updateHoliday() {
-        const {holiday, selectedDurationOption,selectedTypeOption}=this.state;
+        const { holiday, selectedDurationOption, selectedTypeOption } = this.state;
         const apiBaseUrl = `http://192.168.1.250:10202`;
-        const valueType=selectedTypeOption && selectedTypeOption.value;
-        const valueDuration=selectedDurationOption && selectedDurationOption.value;
-        var urlStr= '';
-        if (holiday.holidayID==-1){
-             urlStr = apiBaseUrl + `/api/datestable/UpdateHoliday/` + holiday.holidayID + `/` + moment(this.props.selectedDate).format('MM-DD-YYYY')+'/'+ holiday.userID
-        
+        const valueType = selectedTypeOption && selectedTypeOption.value;
+        const valueDuration = selectedDurationOption && selectedDurationOption.value;
+        var urlStr = '';
+        if (holiday.holidayID == -1) {
+            urlStr = apiBaseUrl + `/api/datestable/CreateHoliday/` + holiday.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('MM-DD-YYYY') + '/'
+
         }
-        else{
-             urlStr = apiBaseUrl + `/api/datestable/UpdateHoliday/` + holiday.holidayID + `/` + valueType+'/'+ valueDuration+'/'
-        
+        else {
+            urlStr = apiBaseUrl + `/api/datestable/UpdateHoliday/` + holiday.holidayID + `/` + valueType + '/' + valueDuration + '/'
+
         }
         const test = '';
         fetch(urlStr)
@@ -124,7 +143,7 @@ export default class TestApi extends React.Component {
                     <td>{userDataRow.user.firstName}</td>
                     {userDataRow.userRow.map((holiday, index) => {
 
-                        return holiday.holidayID == -1 ? <td>{'-'}</td> : <td><button onClick={() => this.setHoliday(holiday)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </button></td>
+                        return holiday.holidayID == -1 ? <td><a onClick={() => this.setHoliday(holiday)} >{'-'}</a></td> : <td><button onClick={() => this.setHoliday(holiday)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </button></td>
                     }
 
                     )}
@@ -133,12 +152,13 @@ export default class TestApi extends React.Component {
         })
     }
 
-    setHoliday (holiday){
+    setHoliday(holiday) {
 
-        this.setState({selectedTypeOption : holiday.holType, selectedDurationOption : holiday.duration, holiday : holiday});
-        this.props.setDate(moment(holiday.holDate,null,null));
+        this.setState({ selectedTypeOption: holiday.holType, selectedDurationOption: holiday.duration, holiday: holiday });
+        this.props.setDate(moment(holiday.holDate, null, null));
     }
-  
+
+
     render() {
         const { weekData, isLoaded, selectedTypeOption, selectedDurationOption } = this.state;
 
@@ -154,27 +174,35 @@ export default class TestApi extends React.Component {
             return (
                 <span>
 
-<button onClick={() => this.updateHoliday()}>
-        Click me
-      </button>
+
                     <table id='users'>
                         <tbody>
                             {this.renderTableHeader(weekData)}
                             {this.renderTableBody(weekData)}
+                            <tr>
+                                <td><Select
+
+                                    autosize={true}
+                                    options={selectTypes}
+                                    value={selectedTypeOption}
+                                    onChange={this.handleTypeChange}
+                                ></Select></td>
+                                <td><Select
+
+                                    autosize={true}
+                                    options={selectDurations}
+                                    value={selectedDurationOption}
+                                    onChange={this.handleDurationChange}
+                                ></Select></td>
+                                <td> <button onClick={() => this.updateHoliday()}>
+                                    Click me
+                                     </button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <table><tbody>
-                        <tr>
-                            <td><Select
-                                options={selectTypes}
-                                value={selectedTypeOption}
-                                onChange={this.handleTypeChange}
-                            ></Select></td>
-                            <td><Select
-                                options={selectDurations}
-                                value={selectedDurationOption}
-                                onChange={this.handleDurationChange}
-                            ></Select></td></tr>
+
                     </tbody></table>
 
 

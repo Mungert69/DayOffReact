@@ -209,7 +209,8 @@ export default class TestApi extends React.Component {
                             value={selectedTypeOption}
                             onChange={this.handleTypeChange}
                         ></Select></Col>
-                    </Row><Row><Col>
+                    </Row>
+                    <Row><Col>
                         <button onClick={() => this.updateHoliday()}>
                             Update
                                      </button>

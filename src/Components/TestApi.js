@@ -32,43 +32,39 @@ export default class TestApi extends React.Component {
             durations: [],
             selectedTypeOption: null,
             selectedDurationOption: null,
-            holiday: null
+            holiday: null,
+            result : ''
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.fromDate !== nextProps.fromDate) {
-            const apiBaseUrl = 'http://192.168.1.250:10202';
-            fetch(apiBaseUrl + '/api/datestable/WeekData/' + nextProps.fromDate + '/' + nextProps.toDate)
-                .then(
-                    response => response.json(),
-                    error => console.log('An error occurred in  TestApi.js : ', error)
-                )
-                .then(data => {
-                    this.setState({ weekData: data, isLoaded: true })
-                }
-                );
-
-        }
-
-    }
-    componentDidMount() {
-        const apiBaseUrl = `http://192.168.1.250:10202`;
-        var urlStr = apiBaseUrl + `/api/datestable/WeekData/` + this.props.fromDate + `/` + this.props.toDate;
-        fetch(urlStr)
+    getData (props) {
+        const apiBaseUrl = 'http://192.168.1.250:10202';
+        fetch(apiBaseUrl + '/api/datestable/WeekData/' + props.fromDate + '/' + props.toDate)
             .then(
                 response => response.json(),
-                error => console.log('An error occurred in  TestApi.js : ', error)
+                error => console.log('An error occurred in  TestApi.js :  getData()', error)
             )
             .then(data => {
                 this.setState({ weekData: data, isLoaded: true })
             }
             );
-        urlStr = apiBaseUrl + `/api/datestable/GetTypes`;
+
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.fromDate !== nextProps.fromDate) {
+           this.getData(nextProps);
+        }
+
+    }
+    componentDidMount() {
+        const apiBaseUrl = `http://192.168.1.250:10202`;
+        this.getData(this.props);
+        var urlStr = apiBaseUrl + `/api/datestable/GetTypes`;
         fetch(urlStr)
             .then(
                 response => response.json(),
-                error => console.log('An error occurred in  TestApi.js : ', error)
+                error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetTypes ', error)
             )
             .then(data => {
                 this.setState({ types: data })
@@ -78,7 +74,7 @@ export default class TestApi extends React.Component {
         fetch(urlStr)
             .then(
                 response => response.json(),
-                error => console.log('An error occurred in  TestApi.js : ', error)
+                error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetDurations', error)
             )
             .then(data => {
                 this.setState({ durations: data })
@@ -92,6 +88,22 @@ export default class TestApi extends React.Component {
 
     handleDurationChange = (selectedDurationOption) => {
         this.setState({ selectedDurationOption });
+    }
+
+    deleteHoliday(){
+       const  {holiday}=this.state;
+        const apiBaseUrl = `http://192.168.1.250:10202`;
+
+            const urlStr = apiBaseUrl + `/api/datestable/DeleteHoliday/` + holiday.holidayID + `/`;
+            fetch(urlStr)
+            .then(
+                response => response.json(),
+                error => console.log('An error occurred in  TestApi.js : deleteHoliday()', error)
+            )
+            .then(data => {
+                this.setState({ result: data, isLoaded: true },()=>{this.getData(this.props);})
+            }
+            );
     }
 
     updateHoliday() {
@@ -109,15 +121,17 @@ export default class TestApi extends React.Component {
 
         }
         const test = '';
-        fetch(urlStr)
+         fetch(urlStr)
             .then(
                 response => response.json(),
-                error => console.log('An error occurred in  TestApi.js : ', error)
+                error => console.log('An error occurred in  TestApi.js : updateHoliday', error)
             )
             .then(data => {
-                this.setState({ weekData: data, isLoaded: true })
+                this.setState({ result: data, isLoaded: true },()=>{this.getData(this.props);})
             }
             );
+        
+        
     }
 
     renderTableHeader(weekData) {
@@ -143,7 +157,7 @@ export default class TestApi extends React.Component {
                     <td>{userDataRow.user.firstName}</td>
                     {userDataRow.userRow.map((holiday, index) => {
 
-                        return holiday.holidayID == -1 ? <td><a onClick={() => this.setHoliday(holiday)} >{'-'}</a></td> : <td><button onClick={() => this.setHoliday(holiday)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </button></td>
+                        return holiday.holidayID == -1 ? <td><a onClick={() => this.setHoliday(holiday)} >{'-'}</a></td> : <td><a onClick={() => this.setHoliday(holiday)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </a></td>
                     }
 
                     )}
@@ -153,14 +167,14 @@ export default class TestApi extends React.Component {
     }
 
     setHoliday(holiday) {
-
-        this.setState({ selectedTypeOption: holiday.holType, selectedDurationOption: holiday.duration, holiday: holiday });
+        const {types, durations} = this.state;
+        this.setState({ selectedTypeOption : {value : holiday.holType, label : types[holiday.holType]}, selectedDurationOption: {value : holiday.duration, label : durations[holiday.duration]}, holiday: holiday ,result : ''});
         this.props.setDate(moment(holiday.holDate, null, null));
     }
 
 
     render() {
-        const { weekData, isLoaded, selectedTypeOption, selectedDurationOption } = this.state;
+        const { weekData, isLoaded, selectedTypeOption, selectedDurationOption,result } = this.state;
 
         if (isLoaded) {
             var selectTypes = [];
@@ -179,26 +193,29 @@ export default class TestApi extends React.Component {
                         <tbody>
                             {this.renderTableHeader(weekData)}
                             {this.renderTableBody(weekData)}
-                            <tr>
-                                <td><Select
-
-                                    autosize={true}
-                                    options={selectTypes}
-                                    value={selectedTypeOption}
-                                    onChange={this.handleTypeChange}
-                                ></Select></td>
-                                <td><Select
-
+                            <tr>                               
+                                <td><Select                                  
                                     autosize={true}
                                     options={selectDurations}
                                     value={selectedDurationOption}
                                     onChange={this.handleDurationChange}
                                 ></Select></td>
+                                 <td><Select                                    
+                                    autosize={true}
+                                    options={selectTypes}
+                                    value={selectedTypeOption}
+                                    onChange={this.handleTypeChange}
+                                ></Select></td>
                                 <td> <button onClick={() => this.updateHoliday()}>
-                                    Click me
+                                    Update
+                                     </button>
+                                </td>
+                                <td> <button onClick={() => this.deleteHoliday()}>
+                                    Delete
                                      </button>
                                 </td>
                             </tr>
+                            <tr>{result}</tr>
                         </tbody>
                     </table>
                     <table><tbody>

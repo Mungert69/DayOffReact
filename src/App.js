@@ -5,6 +5,9 @@ import Calendar from './Components/CalendarComp';
 import { CustomTable } from './Components/table';
 import TestApi from './Components/TestApi';
 import moment from "moment";
+import { Row, Col, Container } from 'react-bootstrap'
+
+
 
 
 function App() {
@@ -34,14 +37,24 @@ function App() {
 
   return (
     <div className="App">
+      
       <header className="App-header">
-        {selectedDate.format('DD-MM-YYYY')}
-        <p className="App-float-left">
-          <Calendar setDate={setDate} />
-        </p>
-        <p className="App-float-right">
-          <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
-        </p>
+      <link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+  integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+  crossorigin="anonymous"
+/>
+        <Container>
+          <Row><Col>{selectedDate.format('DD-MM-YYYY')}</Col></Row>
+          <Row>
+            <Col><Calendar setDate={setDate} /></Col>           
+            <Col> <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
+            </Col>
+          </Row>
+        </Container>
+
+
       </header>
     </div>
   );

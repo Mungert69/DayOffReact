@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import moment from "moment";
 import Select from 'react-select';
+import { Row, Col, Container } from 'react-bootstrap'
 const customStyles = {
     option: (provided, state) => ({
-      ...provided,
-      borderBottom: '1px dotted pink',
-      color: state.isSelected ? 'red' : 'blue',
-      padding: 20,
+        ...provided,
+        borderBottom: '1px dotted pink',
+        color: state.isSelected ? 'red' : 'blue',
+        padding: 20,
     }),
     control: () => ({
-      // none of react-select's styles are passed to <Control />
-      width: 100,
+        // none of react-select's styles are passed to <Control />
+        width: 100,
     }),
     singleValue: (provided, state) => {
-      const opacity = state.isDisabled ? 0.5 : 1;
-      const transition = 'opacity 300ms';
-  
-      return { ...provided, opacity, transition };
+        const opacity = state.isDisabled ? 0.5 : 1;
+        const transition = 'opacity 300ms';
+
+        return { ...provided, opacity, transition };
     }
-  }
+}
 export default class TestApi extends React.Component {
 
 
@@ -33,11 +34,11 @@ export default class TestApi extends React.Component {
             selectedTypeOption: null,
             selectedDurationOption: null,
             holiday: null,
-            result : ''
+            result: ''
         };
     }
 
-    getData (props) {
+    getData(props) {
         const apiBaseUrl = 'http://192.168.1.250:10202';
         fetch(apiBaseUrl + '/api/datestable/WeekData/' + props.fromDate + '/' + props.toDate)
             .then(
@@ -53,7 +54,7 @@ export default class TestApi extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.fromDate !== nextProps.fromDate) {
-           this.getData(nextProps);
+            this.getData(nextProps);
         }
 
     }
@@ -90,18 +91,18 @@ export default class TestApi extends React.Component {
         this.setState({ selectedDurationOption });
     }
 
-    deleteHoliday(){
-       const  {holiday}=this.state;
+    deleteHoliday() {
+        const { holiday } = this.state;
         const apiBaseUrl = `http://192.168.1.250:10202`;
 
-            const urlStr = apiBaseUrl + `/api/datestable/DeleteHoliday/` + holiday.holidayID + `/`;
-            fetch(urlStr)
+        const urlStr = apiBaseUrl + `/api/datestable/DeleteHoliday/` + holiday.holidayID + `/`;
+        fetch(urlStr)
             .then(
                 response => response.json(),
                 error => console.log('An error occurred in  TestApi.js : deleteHoliday()', error)
             )
             .then(data => {
-                this.setState({ result: data, isLoaded: true },()=>{this.getData(this.props);})
+                this.setState({ result: data, isLoaded: true }, () => { this.getData(this.props); })
             }
             );
     }
@@ -121,17 +122,17 @@ export default class TestApi extends React.Component {
 
         }
         const test = '';
-         fetch(urlStr)
+        fetch(urlStr)
             .then(
                 response => response.json(),
                 error => console.log('An error occurred in  TestApi.js : updateHoliday', error)
             )
             .then(data => {
-                this.setState({ result: data, isLoaded: true },()=>{this.getData(this.props);})
+                this.setState({ result: data, isLoaded: true }, () => { this.getData(this.props); })
             }
             );
-        
-        
+
+
     }
 
     renderTableHeader(weekData) {
@@ -167,14 +168,14 @@ export default class TestApi extends React.Component {
     }
 
     setHoliday(holiday) {
-        const {types, durations} = this.state;
-        this.setState({ selectedTypeOption : {value : holiday.holType, label : types[holiday.holType]}, selectedDurationOption: {value : holiday.duration, label : durations[holiday.duration]}, holiday: holiday ,result : ''});
+        const { types, durations } = this.state;
+        this.setState({ selectedTypeOption: { value: holiday.holType, label: types[holiday.holType] }, selectedDurationOption: { value: holiday.duration, label: durations[holiday.duration] }, holiday: holiday, result: '' });
         this.props.setDate(moment(holiday.holDate, null, null));
     }
 
 
     render() {
-        const { weekData, isLoaded, selectedTypeOption, selectedDurationOption,result } = this.state;
+        const { weekData, isLoaded, selectedTypeOption, selectedDurationOption, result } = this.state;
 
         if (isLoaded) {
             var selectTypes = [];
@@ -188,39 +189,39 @@ export default class TestApi extends React.Component {
             return (
                 <span>
 
-
-                    <table id='users'>
+                    <Row><table id='users'>
                         <tbody>
                             {this.renderTableHeader(weekData)}
                             {this.renderTableBody(weekData)}
-                            <tr>                               
-                                <td><Select                                  
-                                    autosize={true}
-                                    options={selectDurations}
-                                    value={selectedDurationOption}
-                                    onChange={this.handleDurationChange}
-                                ></Select></td>
-                                 <td><Select                                    
-                                    autosize={true}
-                                    options={selectTypes}
-                                    value={selectedTypeOption}
-                                    onChange={this.handleTypeChange}
-                                ></Select></td>
-                                <td> <button onClick={() => this.updateHoliday()}>
-                                    Update
-                                     </button>
-                                </td>
-                                <td> <button onClick={() => this.deleteHoliday()}>
-                                    Delete
-                                     </button>
-                                </td>
-                            </tr>
-                            <tr>{result}</tr>
-                        </tbody>
-                    </table>
-                    <table><tbody>
 
-                    </tbody></table>
+                        </tbody>
+                    </table></Row>
+
+
+                    <Row>
+                        <Col ><Select
+                            options={selectDurations}
+                            value={selectedDurationOption}
+                            onChange={this.handleDurationChange}
+                        ></Select></Col>
+                        <Col> <Select
+                            options={selectTypes}
+                            value={selectedTypeOption}
+                            onChange={this.handleTypeChange}
+                        ></Select></Col>
+                    </Row><Row><Col>
+                        <button onClick={() => this.updateHoliday()}>
+                            Update
+                                     </button>
+                    </Col>
+                        <Col>
+                            <button onClick={() => this.deleteHoliday()}>
+                                Delete
+                                     </button>
+                        </Col>
+                    </Row>
+
+                    <Row><Col>{result}</Col></Row>
 
 
                 </span>

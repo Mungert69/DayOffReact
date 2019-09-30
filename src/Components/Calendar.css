@@ -11,13 +11,9 @@
 
 /* @start tail.DateTime */
 .tail-datetime-calendar {
-    width: 245px;
     height: auto;
     margin: 15px;
     padding: 0;
-    display: block;
-    overflow: hidden;
-    position: absolute;
     border-collapse: separate;
     font-family: "Open Sans", Calibri, Arial, sans-serif;
     background-color: #ffffff;

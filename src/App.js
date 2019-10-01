@@ -46,7 +46,10 @@ function App() {
   crossorigin="anonymous"
 />
         <Container>
-          <Row><Col>{selectedDate.format('DD-MM-YYYY')}</Col></Row>
+          <Row>
+            <Col>Selected Date : {selectedDate.format('DD-MM-YYYY')}</Col>
+            <Col>Selected User : {user.firstName}</Col>
+          </Row>
           <Row>
             <Col><Calendar setDate={setDate} /></Col>           
             <Col> <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />

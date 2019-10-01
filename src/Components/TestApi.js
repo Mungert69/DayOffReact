@@ -31,12 +31,14 @@ export default class TestApi extends React.Component {
             weekData: {},
             types: [],
             durations: [],
+            users : [],
             selectedTypeOption: null,
             selectedDurationOption: null,
             holiday: null,
             result: ''
         };
     }
+
 
     getData(props) {
         const apiBaseUrl = 'http://192.168.1.250:10202';
@@ -81,6 +83,16 @@ export default class TestApi extends React.Component {
                 this.setState({ durations: data })
             }
             );
+            urlStr = apiBaseUrl + `/api/datestable/GetUsers`;
+            fetch(urlStr)
+                .then(
+                    response => response.json(),
+                    error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetUsers', error)
+                )
+                .then(data => {
+                    this.setState({ users: data })
+                }
+                );
     }
 
     handleTypeChange = (selectedTypeOption) => {
@@ -167,10 +179,20 @@ export default class TestApi extends React.Component {
         })
     }
 
+    getUserIndex(userID){
+    const {users}=this.state;
+    var arrayIndex=-1;
+    users.map((user,index)=> {
+        var test='';
+        if (user.id==userID) arrayIndex=index;
+    })
+    return arrayIndex;
+    }
+
     setHoliday(holiday) {
-        const { types, durations } = this.state;
+        const { types, durations,users,userDataRows } = this.state;
         this.setState({ selectedTypeOption: { value: holiday.holType, label: types[holiday.holType] }, selectedDurationOption: { value: holiday.duration, label: durations[holiday.duration] }, holiday: holiday, result: '' });
-        this.props.setDate(moment(holiday.holDate, null, null));
+        this.props.setDate(moment(holiday.holDate), null, null,users[this.getUserIndex(holiday.userID)]);
     }
 
 
@@ -197,7 +219,10 @@ export default class TestApi extends React.Component {
                         </tbody>
                     </table></Row>
 
-
+                    <Row>
+                        <Col>Select Duration</Col>
+                        <Col>Select Type</Col>
+                        </Row>
                     <Row>
                         <Col ><Select
                             options={selectDurations}

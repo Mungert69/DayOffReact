@@ -41,7 +41,7 @@ export default class TestApi extends React.Component {
 
 
     getData(props) {
-        const apiBaseUrl = 'http://192.168.1.250:10202';
+        const apiBaseUrl = 'http://192.168.1.20:10202';
         fetch(apiBaseUrl + '/api/datestable/WeekData/' + props.fromDate + '/' + props.toDate)
             .then(
                 response => response.json(),
@@ -61,7 +61,7 @@ export default class TestApi extends React.Component {
 
     }
     componentDidMount() {
-        const apiBaseUrl = `http://192.168.1.250:10202`;
+        const apiBaseUrl = `http://192.168.1.20:10202`;
         this.getData(this.props);
         var urlStr = apiBaseUrl + `/api/datestable/GetTypes`;
         fetch(urlStr)
@@ -105,7 +105,7 @@ export default class TestApi extends React.Component {
 
     deleteHoliday() {
         const { holiday } = this.state;
-        const apiBaseUrl = `http://192.168.1.250:10202`;
+        const apiBaseUrl = `http://192.168.1.20:10202`;
 
         const urlStr = apiBaseUrl + `/api/datestable/DeleteHoliday/` + holiday.holidayID + `/`;
         fetch(urlStr)
@@ -121,12 +121,12 @@ export default class TestApi extends React.Component {
 
     updateHoliday() {
         const { holiday, selectedDurationOption, selectedTypeOption } = this.state;
-        const apiBaseUrl = `http://192.168.1.250:10202`;
+        const apiBaseUrl = `http://192.168.1.20:10202`;
         const valueType = selectedTypeOption && selectedTypeOption.value;
         const valueDuration = selectedDurationOption && selectedDurationOption.value;
         var urlStr = '';
         if (holiday.holidayID == -1) {
-            urlStr = apiBaseUrl + `/api/datestable/CreateHoliday/` + holiday.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('MM-DD-YYYY') + '/'
+            urlStr = apiBaseUrl + `/api/datestable/CreateHoliday/` + holiday.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/'
 
         }
         else {

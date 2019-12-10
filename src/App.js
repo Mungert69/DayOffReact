@@ -12,8 +12,8 @@ import { Row, Col, Container } from 'react-bootstrap'
 
 function App() {
   const [selectedDate, setSelectedDate] = useState(moment());
-  const [fromDate, setFromDate] = useState(moment().format('MM-DD-YYYY'));
-  const [toDate, setToDate] = useState(moment().add(6, 'days').format('MM-DD-YYYY'));
+  const [fromDate, setFromDate] = useState(moment().format('DD-MM-YYYY'));
+  const [toDate, setToDate] = useState(moment().add(6, 'days').format('DD-MM-YYYY'));
   const [user, setUser] = useState({});
 
 

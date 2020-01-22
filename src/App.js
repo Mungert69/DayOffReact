@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Calendar from './Components/CalendarComp';
+import Calendar from 'react-calendar';
 import { CustomTable } from './Components/table';
 import TestApi from './Components/TestApi';
 import moment from "moment";
@@ -33,7 +33,21 @@ function App() {
 
   }
 
+  const onDayClick = (d) => {
 
+   
+        const curr = moment(d); // get current date
+        
+        const first =selectedDate.clone().startOf('week').add(1,'days').format('DD-MM-YYYY');
+        const last = selectedDate.clone().endOf('week').add(1,'days').format('DD-MM-YYYY');;
+      
+        var firstDay = first.toString();
+        var lastDay = last.toString();
+        console.log("SELECTED DAY: ", curr.toString(), " First Day ",firstDay , " Last Day: "+lastDay);
+        setDate(curr,first,last);
+      
+    
+  };
 
   return (
     <div className="App">
@@ -51,7 +65,11 @@ function App() {
             <Col>Selected User : {user.firstName}</Col>
           </Row>
           <Row>
-            <Col><Calendar setDate={setDate} /></Col>           
+            <Col> <Calendar onChange={onDayClick}
+         value={selectedDate.toDate()}
+         
+        /></Col>
+           
             <Col> <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
             </Col>
           </Row>

@@ -38,8 +38,8 @@ function App() {
    
         const curr = moment(d); // get current date
         
-        const first =selectedDate.clone().startOf('week').add(1,'days').format('DD-MM-YYYY');
-        const last = selectedDate.clone().endOf('week').add(1,'days').format('DD-MM-YYYY');;
+        const first =curr.clone().startOf('week').add(1,'days').format('DD-MM-YYYY');
+        const last = curr.clone().endOf('week').add(1,'days').format('DD-MM-YYYY');;
       
         var firstDay = first.toString();
         var lastDay = last.toString();
@@ -65,7 +65,7 @@ function App() {
             <Col>Selected User : {user.firstName}</Col>
           </Row>
           <Row>
-            <Col> <Calendar onChange={onDayClick}
+            <Col> <Calendar  onClickDay={onDayClick}
          value={selectedDate.toDate()}
          
         /></Col>

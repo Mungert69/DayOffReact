@@ -16,7 +16,7 @@ function App() {
   const [toDate, setToDate] = useState(moment().add(6, 'days').format('DD-MM-YYYY'));
   const [user, setUser] = useState({});
 
-
+  const fontStyle={color: 'yellow'};
 
   const setDate = (date, fromDate, toDate, user) => {
     setSelectedDate(date);
@@ -69,8 +69,8 @@ function App() {
            
             <Col xs={8}>
             <Row>
-            <Col>Selected Date : {selectedDate.format('DD-MM-YYYY')}</Col>
-            <Col>Selected User : {user.firstName}</Col>
+            <Col >Selected Date :<span style={fontStyle}> {selectedDate.format('DD-MM-YYYY')}</span></Col>
+            <Col>Selected User :<span style={fontStyle}> {user.firstName}</span></Col>
           </Row>
                <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
             </Col>

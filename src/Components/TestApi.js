@@ -116,7 +116,7 @@ export default class TestApi extends React.Component {
                 error => console.log('An error occurred in  TestApi.js : deleteHoliday()', error)
             )
             .then(data => {
-                this.setState({ result: data, isLoaded: true }, () => { this.getData(this.props); })
+                this.setState({ result: data, isLoaded: true, selectedRow : -1, selectedCol : -1 }, () => { this.getData(this.props); })
             }
             );
     }
@@ -142,7 +142,7 @@ export default class TestApi extends React.Component {
                 error => console.log('An error occurred in  TestApi.js : updateHoliday', error)
             )
             .then(data => {
-                this.setState({ result: data, isLoaded: true }, () => { this.getData(this.props); })
+                this.setState({ result: data, isLoaded: true , selectedRow : -1, selectedCol : -1}, () => { this.getData(this.props); })
             }
             );
 
@@ -171,20 +171,23 @@ export default class TestApi extends React.Component {
                 <tr key={indexRow}>
                     <td>{userDataRow.user.firstName}</td>
                     {userDataRow.userRow.map((holiday, indexCol) => {
-                        var style = {};
-                        if (indexRow === this.state.selectedRow) {
-                            const style = {
-                                fontWeight: 'bold',
-                               
+                        var style = {
+                                color: 'yellow'
+                              };
+
+                        if ( indexCol === this.state.selectedCol && indexRow === this.state.selectedRow) {
+                            style = {
+                                font: 'bold',
+                                color: 'red'
                               };
                         };
                         return holiday.holidayID == -1 ?
-                            <td style={style}>
-                                <a onClick={() => this.setHoliday(holiday, indexRow, indexCol)} >{'-'}</a>
+                            <td >
+                                <a style={style} onClick={() => this.setHoliday(holiday, indexRow, indexCol)} >{'-'}</a>
                             </td>
                             :
                             <td style={style}>
-                                <a onClick={() => this.setHoliday(holiday)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </a>
+                                <a style={style} onClick={() => this.setHoliday(holiday, indexRow, indexCol)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </a>
                             </td>
                     }
 
@@ -206,7 +209,7 @@ export default class TestApi extends React.Component {
 
     setHoliday(holiday, indexRow, indexCol) {
         const { types, durations, users, userDataRows, selectedCol, selectedRow } = this.state;
-        this.setState({ selectedTypeOption: { value: holiday.holType, label: types[holiday.holType] }, selectedDurationOption: { value: holiday.duration, label: durations[holiday.duration] }, holiday: holiday, result: '', selectedRow: indexRow, selectedCol, indexCol });
+        this.setState({ selectedTypeOption: { value: holiday.holType, label: types[holiday.holType] }, selectedDurationOption: { value: holiday.duration, label: durations[holiday.duration] }, holiday: holiday, result: '', selectedRow: indexRow, selectedCol: indexCol });
         this.props.setDate(moment(holiday.holDate), null, null, users[this.getUserIndex(holiday.userID)]);
     }
 

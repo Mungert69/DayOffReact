@@ -31,9 +31,11 @@ export default class TestApi extends React.Component {
             weekData: {},
             types: [],
             durations: [],
-            users : [],
+            users: [],
             selectedTypeOption: null,
             selectedDurationOption: null,
+            selectedRow: null,
+            selectedCol: null,
             holiday: null,
             result: ''
         };
@@ -83,16 +85,16 @@ export default class TestApi extends React.Component {
                 this.setState({ durations: data })
             }
             );
-            urlStr = apiBaseUrl + `/api/datestable/GetUsers`;
-            fetch(urlStr)
-                .then(
-                    response => response.json(),
-                    error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetUsers', error)
-                )
-                .then(data => {
-                    this.setState({ users: data })
-                }
-                );
+        urlStr = apiBaseUrl + `/api/datestable/GetUsers`;
+        fetch(urlStr)
+            .then(
+                response => response.json(),
+                error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetUsers', error)
+            )
+            .then(data => {
+                this.setState({ users: data })
+            }
+            );
     }
 
     handleTypeChange = (selectedTypeOption) => {
@@ -152,7 +154,7 @@ export default class TestApi extends React.Component {
         return (
             <tr key={0}>
                 <td>{' '}</td>
-                {weekData.headerDates.map((headerDate) => <td>{moment(headerDate).format('dddd')}</td>
+                {weekData.headerDates.map((headerDate) => <td>{' - - '}{moment(headerDate).format('ddd')}{' - - '}</td>
                 )}
             </tr>)
 
@@ -160,17 +162,30 @@ export default class TestApi extends React.Component {
     }
 
     renderTableBody(weekData) {
-        return weekData.userDataRows.map((userDataRow, index) => {
+        return weekData.userDataRows.map((userDataRow, indexRow) => {
 
             return (
 
 
 
-                <tr key={index}>
+                <tr key={indexRow}>
                     <td>{userDataRow.user.firstName}</td>
-                    {userDataRow.userRow.map((holiday, index) => {
-
-                        return holiday.holidayID == -1 ? <td><a onClick={() => this.setHoliday(holiday)} >{'-'}</a></td> : <td><a onClick={() => this.setHoliday(holiday)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </a></td>
+                    {userDataRow.userRow.map((holiday, indexCol) => {
+                        var style = {};
+                        if (indexRow === this.state.selectedRow) {
+                            const style = {
+                                fontWeight: 'bold',
+                               
+                              };
+                        };
+                        return holiday.holidayID == -1 ?
+                            <td style={style}>
+                                <a onClick={() => this.setHoliday(holiday, indexRow, indexCol)} >{'-'}</a>
+                            </td>
+                            :
+                            <td style={style}>
+                                <a onClick={() => this.setHoliday(holiday)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </a>
+                            </td>
                     }
 
                     )}
@@ -179,20 +194,20 @@ export default class TestApi extends React.Component {
         })
     }
 
-    getUserIndex(userID){
-    const {users}=this.state;
-    var arrayIndex=-1;
-    users.map((user,index)=> {
-        var test='';
-        if (user.id==userID) arrayIndex=index;
-    })
-    return arrayIndex;
+    getUserIndex(userID) {
+        const { users } = this.state;
+        var arrayIndex = -1;
+        users.map((user, index) => {
+            var test = '';
+            if (user.id == userID) arrayIndex = index;
+        })
+        return arrayIndex;
     }
 
-    setHoliday(holiday) {
-        const { types, durations,users,userDataRows } = this.state;
-        this.setState({ selectedTypeOption: { value: holiday.holType, label: types[holiday.holType] }, selectedDurationOption: { value: holiday.duration, label: durations[holiday.duration] }, holiday: holiday, result: '' });
-        this.props.setDate(moment(holiday.holDate), null, null,users[this.getUserIndex(holiday.userID)]);
+    setHoliday(holiday, indexRow, indexCol) {
+        const { types, durations, users, userDataRows, selectedCol, selectedRow } = this.state;
+        this.setState({ selectedTypeOption: { value: holiday.holType, label: types[holiday.holType] }, selectedDurationOption: { value: holiday.duration, label: durations[holiday.duration] }, holiday: holiday, result: '', selectedRow: indexRow, selectedCol, indexCol });
+        this.props.setDate(moment(holiday.holDate), null, null, users[this.getUserIndex(holiday.userID)]);
     }
 
 
@@ -211,7 +226,7 @@ export default class TestApi extends React.Component {
             return (
                 <span>
 
-                    <Row><table id='users'>
+                    <Row ><table id='users'>
                         <tbody>
                             {this.renderTableHeader(weekData)}
                             {this.renderTableBody(weekData)}
@@ -222,14 +237,14 @@ export default class TestApi extends React.Component {
                     <Row>
                         <Col>Select Duration</Col>
                         <Col>Select Type</Col>
-                        </Row>
+                    </Row>
                     <Row>
                         <Col ><Select
                             options={selectDurations}
                             value={selectedDurationOption}
                             onChange={this.handleDurationChange}
                         ></Select></Col>
-                        <Col> <Select
+                        <Col > <Select
                             options={selectTypes}
                             value={selectedTypeOption}
                             onChange={this.handleTypeChange}

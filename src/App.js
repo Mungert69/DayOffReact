@@ -60,17 +60,19 @@ function App() {
   crossorigin="anonymous"
 />
         <Container>
-          <Row>
-            <Col>Selected Date : {selectedDate.format('DD-MM-YYYY')}</Col>
-            <Col>Selected User : {user.firstName}</Col>
-          </Row>
+          
           <Row>
             <Col> <Calendar  onClickDay={onDayClick}
          value={selectedDate.toDate()}
          
         /></Col>
            
-            <Col> <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
+            <Col xs={8}>
+            <Row>
+            <Col>Selected Date : {selectedDate.format('DD-MM-YYYY')}</Col>
+            <Col>Selected User : {user.firstName}</Col>
+          </Row>
+               <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
             </Col>
           </Row>
         </Container>

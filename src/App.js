@@ -17,7 +17,7 @@ function App() {
   const [user, setUser] = useState({});
   const [hiddenCal, setHiddenCal] = useState(false);
 
-  const fontStyle = { color: 'yellow' };
+  const fontStyle = { color: 'green' };
 
   const setDate = (date, fromDate, toDate, user) => {
     setSelectedDate(date);
@@ -71,7 +71,7 @@ function App() {
 
             <Col xs={8}>
               <Row>
-                <Col xs={3}><a o style={{color: 'lightblue'}} onClick={() => setHiddenCal(!hiddenCal)} >Calendar</a></Col>
+                <Col xs={3}><a o style={{color: 'blue'}} onClick={() => setHiddenCal(!hiddenCal)} >Calendar</a></Col>
                 <Col xs={5} >Selected Date :<span style={fontStyle}> {selectedDate.format('DD-MM-YYYY')}</span></Col>
                 <Col xs={4}>Selected User :<span style={fontStyle}> {user.firstName}</span></Col>
               </Row>

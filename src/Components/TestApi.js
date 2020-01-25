@@ -4,6 +4,8 @@ import Select from 'react-select';
 import { Row, Col, Container } from 'react-bootstrap'
 import DataTable from './DataTable';
 
+const apiBaseUrl = 'http://192.168.1.20:10202';
+
 const customStyles = {
     option: (provided, state) => ({
         ...provided,
@@ -36,7 +38,7 @@ export default class TestApi extends React.Component {
 
 
     getData(props) {
-        const apiBaseUrl = 'http://192.168.1.20:10202';
+     
         fetch(apiBaseUrl + '/api/datestable/WeekData/' + props.fromDate + '/' + props.toDate)
             .then(
                 response => response.json(),
@@ -56,7 +58,7 @@ export default class TestApi extends React.Component {
 
     }
     componentDidMount() {
-        const apiBaseUrl = `http://192.168.1.20:10202`;
+
         this.getData(this.props);
         var urlStr = apiBaseUrl + `/api/datestable/GetTypes`;
         fetch(urlStr)
@@ -100,7 +102,6 @@ export default class TestApi extends React.Component {
 
     deleteHoliday() {
         const { holiday } = this.state;
-        const apiBaseUrl = `http://192.168.1.20:10202`;
 
         const urlStr = apiBaseUrl + `/api/datestable/DeleteHoliday/` + holiday.holidayID + `/`;
         fetch(urlStr)
@@ -179,7 +180,7 @@ export default class TestApi extends React.Component {
                     <Row >
                         <DataTable weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} types={this.state.types} setHoliday={this.setHoliday} />
                     </Row>
-
+                    <Row><Col>{result}</Col></Row>
                     <Row>
                         <Col>Select Duration</Col>
                         <Col>Select Type</Col>
@@ -199,18 +200,18 @@ export default class TestApi extends React.Component {
                         ></Select></Col>
                     </Row>
                     <Row><Col>
-                        <a style={{ color: 'lightblue' }} onClick={() => this.updateHoliday()}>
+                        <a style={{ color: 'blue' }} onClick={() => this.updateHoliday()}>
                             Update
                                      </a>
                     </Col>
                         <Col>
-                            <a style={{ color: 'lightblue' }} onClick={() => this.deleteHoliday()}>
+                            <a style={{ color: 'blue' }} onClick={() => this.deleteHoliday()}>
                                 Delete
                                      </a>
                         </Col>
                     </Row>
 
-                    <Row><Col>{result}</Col></Row>
+                   
 
 
                 </span>

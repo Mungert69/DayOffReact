@@ -62,14 +62,14 @@ function App() {
         />
         <Container>
 
-          <Row xs={4}>
+          <Row >
             <Col hidden={hiddenCal}>
               <Calendar  onClickDay={onDayClick}
                 value={selectedDate.toDate()}
               />
             </Col>
 
-            <Col xs={8}>
+            <Col >
               <Row>
                 <Col xs={3}><a o style={{color: 'blue'}} onClick={() => setHiddenCal(!hiddenCal)} >Calendar</a></Col>
                 <Col xs={5} >Selected Date :<span style={fontStyle}> {selectedDate.format('DD-MM-YYYY')}</span></Col>

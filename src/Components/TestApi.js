@@ -9,16 +9,7 @@ const customStyles = {
         color: state.isSelected ? 'red' : 'blue',
         padding: 20,
     }),
-    control: () => ({
-        // none of react-select's styles are passed to <Control />
-        width: 100,
-    }),
-    singleValue: (provided, state) => {
-        const opacity = state.isDisabled ? 0.5 : 1;
-        const transition = 'opacity 300ms';
-
-        return { ...provided, opacity, transition };
-    }
+   
 }
 export default class TestApi extends React.Component {
 
@@ -172,9 +163,14 @@ export default class TestApi extends React.Component {
                     <td>{userDataRow.user.firstName}</td>
                     {userDataRow.userRow.map((holiday, indexCol) => {
                         var style = {
-                                color: 'yellow'
+                                color: 'yellow',
+                                fontSize: '12px'
                               };
-
+                              if ( indexRow === this.state.selectedRow) {
+                                style = {
+                                    color: 'lightblue'
+                                  };
+                            };
                         if ( indexCol === this.state.selectedCol && indexRow === this.state.selectedRow) {
                             style = {
                                 font: 'bold',
@@ -243,25 +239,27 @@ export default class TestApi extends React.Component {
                     </Row>
                     <Row>
                         <Col ><Select
+                        styles={customStyles}
                             options={selectDurations}
                             value={selectedDurationOption}
                             onChange={this.handleDurationChange}
                         ></Select></Col>
                         <Col > <Select
+                        styles={customStyles}             
                             options={selectTypes}
                             value={selectedTypeOption}
                             onChange={this.handleTypeChange}
                         ></Select></Col>
                     </Row>
                     <Row><Col>
-                        <button onClick={() => this.updateHoliday()}>
+                        <a style={{color : 'lightblue'}} onClick={() => this.updateHoliday()}>
                             Update
-                                     </button>
+                                     </a>
                     </Col>
                         <Col>
-                            <button onClick={() => this.deleteHoliday()}>
+                            <a style={{color : 'lightblue'}} onClick={() => this.deleteHoliday()}>
                                 Delete
-                                     </button>
+                                     </a>
                         </Col>
                     </Row>
 

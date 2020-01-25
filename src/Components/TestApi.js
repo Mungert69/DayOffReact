@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import moment from "moment";
 import Select from 'react-select';
 import { Row, Col, Container } from 'react-bootstrap'
+import DataTable from './DataTable';
+
 const customStyles = {
     option: (provided, state) => ({
         ...provided,
@@ -9,7 +11,7 @@ const customStyles = {
         color: state.isSelected ? 'red' : 'blue',
         padding: 20,
     }),
-   
+
 }
 export default class TestApi extends React.Component {
 
@@ -107,7 +109,7 @@ export default class TestApi extends React.Component {
                 error => console.log('An error occurred in  TestApi.js : deleteHoliday()', error)
             )
             .then(data => {
-                this.setState({ result: data, isLoaded: true, selectedRow : -1, selectedCol : -1 }, () => { this.getData(this.props); })
+                this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1 }, () => { this.getData(this.props); })
             }
             );
     }
@@ -133,65 +135,14 @@ export default class TestApi extends React.Component {
                 error => console.log('An error occurred in  TestApi.js : updateHoliday', error)
             )
             .then(data => {
-                this.setState({ result: data, isLoaded: true , selectedRow : -1, selectedCol : -1}, () => { this.getData(this.props); })
+                this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1 }, () => { this.getData(this.props); })
             }
             );
 
 
     }
 
-    renderTableHeader(weekData) {
 
-        return (
-            <tr key={0}>
-                <td>{' '}</td>
-                {weekData.headerDates.map((headerDate) => <td>{' - - '}{moment(headerDate).format('ddd')}{' - - '}</td>
-                )}
-            </tr>)
-
-
-    }
-
-    renderTableBody(weekData) {
-        return weekData.userDataRows.map((userDataRow, indexRow) => {
-
-            return (
-
-
-
-                <tr key={indexRow}>
-                    <td>{userDataRow.user.firstName}</td>
-                    {userDataRow.userRow.map((holiday, indexCol) => {
-                        var style = {
-                                color: 'yellow',
-                                fontSize: '12px'
-                              };
-                              if ( indexRow === this.state.selectedRow) {
-                                style = {
-                                    color: 'lightblue'
-                                  };
-                            };
-                        if ( indexCol === this.state.selectedCol && indexRow === this.state.selectedRow) {
-                            style = {
-                                font: 'bold',
-                                color: 'red'
-                              };
-                        };
-                        return holiday.holidayID == -1 ?
-                            <td >
-                                <a style={style} onClick={() => this.setHoliday(holiday, indexRow, indexCol)} >{'-'}</a>
-                            </td>
-                            :
-                            <td style={style}>
-                                <a style={style} onClick={() => this.setHoliday(holiday, indexRow, indexCol)}>{this.state.durations[holiday.duration]}{' : '}{this.state.types[holiday.holType]} </a>
-                            </td>
-                    }
-
-                    )}
-                </tr>
-            )
-        })
-    }
 
     getUserIndex(userID) {
         const { users } = this.state;
@@ -203,7 +154,7 @@ export default class TestApi extends React.Component {
         return arrayIndex;
     }
 
-    setHoliday(holiday, indexRow, indexCol) {
+    setHoliday = (holiday, indexRow, indexCol) => {
         const { types, durations, users, userDataRows, selectedCol, selectedRow } = this.state;
         this.setState({ selectedTypeOption: { value: holiday.holType, label: types[holiday.holType] }, selectedDurationOption: { value: holiday.duration, label: durations[holiday.duration] }, holiday: holiday, result: '', selectedRow: indexRow, selectedCol: indexCol });
         this.props.setDate(moment(holiday.holDate), null, null, users[this.getUserIndex(holiday.userID)]);
@@ -211,7 +162,7 @@ export default class TestApi extends React.Component {
 
 
     render() {
-        const { weekData, isLoaded, selectedTypeOption, selectedDurationOption, result } = this.state;
+        const { weekData, isLoaded, selectedTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
 
         if (isLoaded) {
             var selectTypes = [];
@@ -225,13 +176,9 @@ export default class TestApi extends React.Component {
             return (
                 <span>
 
-                    <Row ><table id='users'>
-                        <tbody>
-                            {this.renderTableHeader(weekData)}
-                            {this.renderTableBody(weekData)}
-
-                        </tbody>
-                    </table></Row>
+                    <Row >
+                        <DataTable weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} types={this.state.types} setHoliday={this.setHoliday} />
+                    </Row>
 
                     <Row>
                         <Col>Select Duration</Col>
@@ -239,25 +186,25 @@ export default class TestApi extends React.Component {
                     </Row>
                     <Row>
                         <Col ><Select
-                        styles={customStyles}
+                            styles={customStyles}
                             options={selectDurations}
                             value={selectedDurationOption}
                             onChange={this.handleDurationChange}
                         ></Select></Col>
                         <Col > <Select
-                        styles={customStyles}             
+                            styles={customStyles}
                             options={selectTypes}
                             value={selectedTypeOption}
                             onChange={this.handleTypeChange}
                         ></Select></Col>
                     </Row>
                     <Row><Col>
-                        <a style={{color : 'lightblue'}} onClick={() => this.updateHoliday()}>
+                        <a style={{ color: 'lightblue' }} onClick={() => this.updateHoliday()}>
                             Update
                                      </a>
                     </Col>
                         <Col>
-                            <a style={{color : 'lightblue'}} onClick={() => this.deleteHoliday()}>
+                            <a style={{ color: 'lightblue' }} onClick={() => this.deleteHoliday()}>
                                 Delete
                                      </a>
                         </Col>

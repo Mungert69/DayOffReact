@@ -6,6 +6,7 @@ import { CustomTable } from './Components/table';
 import TestApi from './Components/TestApi';
 import moment from "moment";
 import { Row, Col, Container, Button } from 'react-bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 

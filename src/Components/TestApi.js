@@ -24,21 +24,23 @@ export default class TestApi extends React.Component {
             error: null,
             isLoaded: false,
             weekData: {},
-            types: [],
+            holTypes: [],
+            workTypes: [],
             durations: [],
             users: [],
-            selectedTypeOption: null,
+            selectedHolTypeOption: null,
+            selectedHolWorkOption: null,
             selectedDurationOption: null,
             selectedRow: null,
             selectedCol: null,
-            holiday: null,
+            event: null,
             result: ''
         };
     }
 
 
     getData(props) {
-     
+
         fetch(apiBaseUrl + '/api/datestable/WeekData/' + props.fromDate + '/' + props.toDate)
             .then(
                 response => response.json(),
@@ -60,14 +62,24 @@ export default class TestApi extends React.Component {
     componentDidMount() {
 
         this.getData(this.props);
-        var urlStr = apiBaseUrl + `/api/datestable/GetTypes`;
+        var urlStr = apiBaseUrl + `/api/datestable/GetHolTypes`;
         fetch(urlStr)
             .then(
                 response => response.json(),
-                error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetTypes ', error)
+                error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetHolTypes ', error)
             )
             .then(data => {
-                this.setState({ types: data })
+                this.setState({ holTypes: data })
+            }
+            );
+        var urlStr = apiBaseUrl + `/api/datestable/GetWorkTypes`;
+        fetch(urlStr)
+            .then(
+                response => response.json(),
+                error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetWorkTypes ', error)
+            )
+            .then(data => {
+                this.setState({ workTypes: data })
             }
             );
         urlStr = apiBaseUrl + `/api/datestable/GetDurations`;
@@ -92,48 +104,78 @@ export default class TestApi extends React.Component {
             );
     }
 
-    handleTypeChange = (selectedTypeOption) => {
-        this.setState({ selectedTypeOption });
+    handleHolTypeChange = (selectedHolTypeOption) => {
+        this.setState({ selectedHolTypeOption, selectedWorkTypeOption: -1 });
+    }
+
+    handleWorkTypeChange = (selectedWorkTypeOption) => {
+        this.setState({ selectedWorkTypeOption, selectedHolTypeOption: -1 });
     }
 
     handleDurationChange = (selectedDurationOption) => {
         this.setState({ selectedDurationOption });
     }
 
-    deleteHoliday() {
-        const { holiday } = this.state;
+    deleteEvent() {
+        const { event } = this.state;
 
-        const urlStr = apiBaseUrl + `/api/datestable/DeleteHoliday/` + holiday.holidayID + `/`;
+        const urlStr = apiBaseUrl + `/api/datestable/DeleteEvent/` + event.eventID + `/` + event.eventType + '/';
         fetch(urlStr)
             .then(
                 response => response.json(),
-                error => console.log('An error occurred in  TestApi.js : deleteHoliday()', error)
+                error => console.log('An error occurred in  TestApi.js : deleteEvent()', error)
             )
             .then(data => {
-                this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1 }, () => { this.getData(this.props); })
+                this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1, event : null }, () => { this.getData(this.props); })
             }
             );
     }
 
-    updateHoliday() {
-        const { holiday, selectedDurationOption, selectedTypeOption } = this.state;
+
+    updateEvent() {
+        const { event, selectedDurationOption, selectedWorkTypeOption, selectedHolTypeOption } = this.state;
+        
+        if (event===null){return;}
         const apiBaseUrl = `http://192.168.1.20:10202`;
-        const valueType = selectedTypeOption && selectedTypeOption.value;
+        var valueType = null;
+        var eventType = 0;
+        if (selectedHolTypeOption !== -1) {
+            valueType = selectedHolTypeOption && selectedHolTypeOption.value;
+            eventType = 0;
+        }
+        if (selectedWorkTypeOption !== -1) {
+            valueType = selectedWorkTypeOption && selectedWorkTypeOption.value;
+            eventType = 1;
+        }
+
+
         const valueDuration = selectedDurationOption && selectedDurationOption.value;
         var urlStr = '';
-        if (holiday.holidayID == -1) {
-            urlStr = apiBaseUrl + `/api/datestable/CreateHoliday/` + holiday.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/'
+        var eventID = event.eventID;
 
+        if (eventID !== -1 && eventType !== event.eventType) {
+            urlStr = apiBaseUrl + `/api/datestable/SwapEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/'  + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/' + eventType + '/' +event.eventType+'/' + event.eventID+'/'
         }
         else {
-            urlStr = apiBaseUrl + `/api/datestable/UpdateHoliday/` + holiday.holidayID + `/` + valueType + '/' + valueDuration + '/'
+            if (eventID === -1) {
+
+                urlStr = apiBaseUrl + `/api/datestable/CreateEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/' + eventType + '/'
+
+            }
+            else {
+
+                urlStr = apiBaseUrl + `/api/datestable/UpdateEvent/` + event.eventID + `/` + valueType + '/' + valueDuration + '/' + eventType + '/'
+
+            }
 
         }
+
+
         const test = '';
         fetch(urlStr)
             .then(
                 response => response.json(),
-                error => console.log('An error occurred in  TestApi.js : updateHoliday', error)
+                error => console.log('An error occurred in  TestApi.js : updateEvent', error)
             )
             .then(data => {
                 this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1 }, () => { this.getData(this.props); })
@@ -155,20 +197,31 @@ export default class TestApi extends React.Component {
         return arrayIndex;
     }
 
-    setHoliday = (holiday, indexRow, indexCol) => {
-        const { types, durations, users, userDataRows, selectedCol, selectedRow } = this.state;
-        this.setState({ selectedTypeOption: { value: holiday.holType, label: types[holiday.holType] }, selectedDurationOption: { value: holiday.duration, label: durations[holiday.duration] }, holiday: holiday, result: '', selectedRow: indexRow, selectedCol: indexCol });
-        this.props.setDate(moment(holiday.holDate), null, null, users[this.getUserIndex(holiday.userID)]);
+    setEvent = (event, indexRow, indexCol) => {
+        const { holTypes, workTypes, durations, users, userDataRows, selectedCol, selectedRow } = this.state;
+        if (event.eventType === 0) {
+            this.setState({ selectedWorkTypeOption: -1, selectedHolTypeOption: { value: event.holType, label: holTypes[event.holType] }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+
+        }
+        if (event.eventType === 1) {
+            this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: { value: event.workType, label: workTypes[event.workType] }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+
+        }
+        this.props.setDate(moment(event.eventDate), null, null, users[this.getUserIndex(event.userID)]);
     }
 
 
     render() {
-        const { weekData, isLoaded, selectedTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
+        const { weekData, isLoaded, selectedHolTypeOption, selectedWorkTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
 
         if (isLoaded) {
-            var selectTypes = [];
-            this.state.types.map((txt, id) => {
-                selectTypes.push({ label: txt, value: id });
+            var selectHolTypes = [];
+            this.state.holTypes.map((txt, id) => {
+                selectHolTypes.push({ label: txt, value: id });
+            });
+            var selectWorkTypes = [];
+            this.state.workTypes.map((txt, id) => {
+                selectWorkTypes.push({ label: txt, value: id });
             });
             var selectDurations = [];
             this.state.durations.map((txt, id) => {
@@ -178,12 +231,13 @@ export default class TestApi extends React.Component {
                 <span>
 
                     <Row >
-                        <DataTable weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} types={this.state.types} setHoliday={this.setHoliday} />
+                        <DataTable weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} />
                     </Row>
                     <Row><Col>{result}</Col></Row>
                     <Row>
-                        <Col>Select Duration</Col>
-                        <Col>Select Type</Col>
+                        <Col>Duration</Col>
+                        <Col>Holiday Type</Col>
+                        <Col>Work Type</Col>
                     </Row>
                     <Row>
                         <Col ><Select
@@ -194,24 +248,30 @@ export default class TestApi extends React.Component {
                         ></Select></Col>
                         <Col > <Select
                             styles={customStyles}
-                            options={selectTypes}
-                            value={selectedTypeOption}
-                            onChange={this.handleTypeChange}
+                            options={selectHolTypes}
+                            value={selectedHolTypeOption}
+                            onChange={this.handleHolTypeChange}
+                        ></Select></Col>
+                        <Col > <Select
+                            styles={customStyles}
+                            options={selectWorkTypes}
+                            value={selectedWorkTypeOption}
+                            onChange={this.handleWorkTypeChange}
                         ></Select></Col>
                     </Row>
                     <Row><Col>
-                        <a style={{ color: 'blue' }} onClick={() => this.updateHoliday()}>
+                        <a style={{ color: 'blue' }} onClick={() => this.updateEvent()}>
                             Update
                                      </a>
                     </Col>
                         <Col>
-                            <a style={{ color: 'blue' }} onClick={() => this.deleteHoliday()}>
+                            <a style={{ color: 'blue' }} onClick={() => this.deleteEvent()}>
                                 Delete
                                      </a>
                         </Col>
                     </Row>
 
-                   
+
 
 
                 </span>

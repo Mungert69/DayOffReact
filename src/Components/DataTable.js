@@ -29,7 +29,7 @@ function renderTableHeader(weekData) {
 
 }
 
-function renderTableBody(weekData, selectedCol, selectedRow, durations, types, setHoliday) {
+function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes, workTypes,setEvent) {
     return weekData.userDataRows.map((userDataRow, indexRow) => {
 
         return (
@@ -38,7 +38,7 @@ function renderTableBody(weekData, selectedCol, selectedRow, durations, types, s
 
             <TableRow  >
                 <TableCell>{userDataRow.user.firstName}</TableCell>
-                {userDataRow.userRow.map((holiday, indexCol) => {
+                {userDataRow.userRow.map((event, indexCol) => {
                     var style = {
                             color: 'black',
                           };
@@ -53,14 +53,21 @@ function renderTableBody(weekData, selectedCol, selectedRow, durations, types, s
                             color: 'red'
                           };
                     };
-                    return holiday.holidayID == -1 ?
+                    var type ;
+                    if (event.eventType === 0){
+                      type = holTypes[event.holType]
+                    }
+                    if (event.eventType === 1){
+                      type =workTypes[event.workType]
+                    }
+                    return event.eventID == -1 ?
                         <TableCell>
-                            <a style={style} onClick={() => setHoliday(holiday, indexRow, indexCol)} >{' ---- '}</a>
+                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)} >{' ---- '}</a>
                         </TableCell>
-                        :
+                        : 
                         <TableCell style={style}>
-                            <a style={style} onClick={() => setHoliday(holiday, indexRow, indexCol)}>{durations[holiday.duration]}{' : '}{types[holiday.holType]} </a>
-                        </TableCell>
+                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)}>{durations[event.duration]}{' : '}{type} </a>
+                        </TableCell> 
                 }
 
                 )}
@@ -79,7 +86,7 @@ export default function DataTable(props) {
           {renderTableHeader(props.weekData)}
         </TableHead>
         <TableBody>
-          {renderTableBody(props.weekData, props.selectedCol, props.selectedRow, props.durations, props.types, props.setHoliday)}
+          {renderTableBody(props.weekData, props.selectedCol, props.selectedRow, props.durations, props.holTypes,props.workTypes, props.setEvent)}
         </TableBody>
       </Table>
     </TableContainer>

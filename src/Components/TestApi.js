@@ -242,8 +242,8 @@ export default class TestApi extends React.Component {
                     </Row>
                     <Row><Col>{result}</Col></Row>
                     <Row>
-                        <Col>Duration</Col>
                         <Col>Holiday Type</Col>
+                        <Col>Work Type</Col>
                     </Row>
                     <Row>
                         

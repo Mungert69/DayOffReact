@@ -199,14 +199,21 @@ export default class TestApi extends React.Component {
 
     setEvent = (event, indexRow, indexCol) => {
         const { holTypes, workTypes, durations, users, userDataRows, selectedCol, selectedRow } = this.state;
-        if (event.eventType === 0) {
-            this.setState({ selectedWorkTypeOption: -1, selectedHolTypeOption: { value: event.holType, label: holTypes[event.holType] }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
-
+        if (event.eventID===-1){
+            this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: -1, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+    
         }
-        if (event.eventType === 1) {
-            this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: { value: event.workType, label: workTypes[event.workType] }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
-
+        else{
+            if (event.eventType === 0) {
+                this.setState({ selectedWorkTypeOption: -1, selectedHolTypeOption: { value: event.holType, label: holTypes[event.holType] }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+    
+            }
+            if (event.eventType === 1) {
+                this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: { value: event.workType, label: workTypes[event.workType] }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+    
+            }
         }
+       
         this.props.setDate(moment(event.eventDate), null, null, users[this.getUserIndex(event.userID)]);
     }
 
@@ -237,15 +244,9 @@ export default class TestApi extends React.Component {
                     <Row>
                         <Col>Duration</Col>
                         <Col>Holiday Type</Col>
-                        <Col>Work Type</Col>
                     </Row>
                     <Row>
-                        <Col ><Select
-                            styles={customStyles}
-                            options={selectDurations}
-                            value={selectedDurationOption}
-                            onChange={this.handleDurationChange}
-                        ></Select></Col>
+                        
                         <Col > <Select
                             styles={customStyles}
                             options={selectHolTypes}

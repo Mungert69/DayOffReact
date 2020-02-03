@@ -29,6 +29,8 @@ function renderTableHeader(weekData) {
 
 }
 
+
+
 function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes, workTypes,setEvent) {
     return weekData.userDataRows.map((userDataRow, indexRow) => {
 
@@ -62,11 +64,11 @@ function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes
                     }
                     return event.eventID == -1 ?
                         <TableCell>
-                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)} >{' ---- '}</a>
+                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)} >{' - '}</a>
                         </TableCell>
                         : 
                         <TableCell style={style}>
-                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)}>{durations[event.duration]}{' : '}{type} </a>
+                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)}>{type} </a>
                         </TableCell> 
                 }
 

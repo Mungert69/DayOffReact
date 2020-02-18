@@ -236,11 +236,7 @@ export default class TestApi extends React.Component {
             });
             return (
                 <span>
-
-                    <Row >
-                        <DataTable weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} />
-                    </Row>
-                    <Row><Col>{result}</Col></Row>
+ <Row><Col>{result}</Col></Row>
                     <Row>
                         <Col>Holiday Type</Col>
                         <Col>Work Type</Col>
@@ -273,6 +269,10 @@ export default class TestApi extends React.Component {
                     </Row>
 
 
+                    <Row >
+                        <DataTable weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} />
+                    </Row>
+                   
 
 
                 </span>

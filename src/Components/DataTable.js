@@ -19,7 +19,8 @@ function renderTableHeader(weekData) {
 
     return (
         <TableRow >
-            <TableCell>{' - '} </TableCell>
+            <TableCell>{' '} </TableCell>
+            <TableCell>{' '} </TableCell>
             {weekData.headerDates.map((headerDate) => <TableCell >{' '}{moment(headerDate).format('ddd')}{' '}</TableCell>
             )}
             
@@ -33,13 +34,26 @@ function renderTableHeader(weekData) {
 
 function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes, workTypes,setEvent) {
     return weekData.userDataRows.map((userDataRow, indexRow) => {
+      var timeStr='';
+      var userName='';
 
+      if ( indexRow % 2 == 0)
+      {
+        timeStr='AM'
+        userName= userDataRow.user.firstName;
+      }
+      else
+      {
+        timeStr='PM'
+        userName='';
+      }
         return (
 
 
 
             <TableRow  >
-                <TableCell>{userDataRow.user.firstName}</TableCell>
+                <TableCell>{userName}</TableCell>
+                <TableCell>{timeStr}</TableCell>
                 {userDataRow.userRow.map((event, indexCol) => {
                     var style = {
                             color: 'black',

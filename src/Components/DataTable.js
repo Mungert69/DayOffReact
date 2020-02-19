@@ -15,11 +15,11 @@ const useStyles = makeStyles({
 });
 
 
-function renderTableHeader(weekData) {
+function renderTableHeader(weekData,setUserFilter) {
 
     return (
         <TableRow >
-            <TableCell>{' '} </TableCell>
+            <TableCell> <a  onClick={() => setUserFilter('All')} >All</a> </TableCell>
             <TableCell>{' '} </TableCell>
             {weekData.headerDates.map((headerDate) => <TableCell >{' '}{moment(headerDate).format('ddd')}{' '}</TableCell>
             )}
@@ -32,10 +32,11 @@ function renderTableHeader(weekData) {
 
 
 
-function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes, workTypes,setEvent) {
+function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes, workTypes,setEvent,setUserFilter,userFilter) {
     return weekData.userDataRows.map((userDataRow, indexRow) => {
       var timeStr='';
       var userName='';
+      const userNameFilter= userDataRow.user.firstName;
 
       if ( indexRow % 2 == 0)
       {
@@ -47,12 +48,13 @@ function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes
         timeStr='PM'
         userName='';
       }
+      if (userFilter=='All' || userFilter===undefined || userFilter==userNameFilter)
         return (
 
-
-
             <TableRow  >
-                <TableCell>{userName}</TableCell>
+                <TableCell>
+                <a  onClick={() => setUserFilter(userName)} >{userName}</a>                 
+                  </TableCell>
                 <TableCell>{timeStr}</TableCell>
                 {userDataRow.userRow.map((event, indexCol) => {
                     var style = {
@@ -99,10 +101,10 @@ export default function DataTable(props) {
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
-          {renderTableHeader(props.weekData)}
+          {renderTableHeader(props.weekData, props.setUserFilter)}
         </TableHead>
         <TableBody>
-          {renderTableBody(props.weekData, props.selectedCol, props.selectedRow, props.durations, props.holTypes,props.workTypes, props.setEvent)}
+          {renderTableBody(props.weekData, props.selectedCol, props.selectedRow, props.durations, props.holTypes,props.workTypes, props.setEvent, props.setUserFilter, props.userFilter)}
         </TableBody>
       </Table>
     </TableContainer>

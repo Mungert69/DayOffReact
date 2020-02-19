@@ -12,12 +12,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
-  const [selectedDate, setSelectedDate] = useState(moment());
-  const [fromDate, setFromDate] = useState(moment().format('DD-MM-YYYY'));
-  const [toDate, setToDate] = useState(moment().add(6, 'days').format('DD-MM-YYYY'));
+  const curr=moment();
+  const first = curr.clone().startOf('week').add(1, 'days').format('DD-MM-YYYY');
+  const last = curr.clone().endOf('week').add(1, 'days').format('DD-MM-YYYY');;
+ 
+  const [selectedDate, setSelectedDate] = useState(curr);
+  const [fromDate, setFromDate] = useState(first);
+  const [toDate, setToDate] = useState(last);
   const [user, setUser] = useState({});
   const [hiddenCal, setHiddenCal] = useState(false);
-
+ 
   const fontStyle = { color: 'green' };
 
   const setDate = (date, fromDate, toDate, user) => {
@@ -71,12 +75,8 @@ function App() {
             </Col>
 
             <Col >
-              <Row>
-                <Col xs={3}><a o style={{color: 'blue'}} onClick={() => setHiddenCal(!hiddenCal)} >Calendar</a></Col>
-                <Col xs={5} >Selected Date :<span style={fontStyle}> {selectedDate.format('DD-MM-YYYY')}</span></Col>
-                <Col xs={4}>Selected User :<span style={fontStyle}> {user.firstName}</span></Col>
-              </Row>
-              <TestApi fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
+             
+              <TestApi hiddenCal={hiddenCal} setHiddenCal={setHiddenCal} fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
             </Col>
           </Row>
         </Container>

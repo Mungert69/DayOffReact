@@ -83,6 +83,7 @@ export default class TestApi extends React.Component {
                 error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetWorkTypes ', error)
             )
             .then(data => {
+                
                 this.setState({ workTypes: data })
             }
             );
@@ -203,7 +204,7 @@ export default class TestApi extends React.Component {
         return arrayIndex;
     }
     setUserFilter=(userFilter)=>{
-        this.setState({userFilter : userFilter});
+        this.setState({userFilter : userFilter, hiddenBut: true});
     }
 
     setEvent = (event, indexRow, indexCol) => {
@@ -214,11 +215,11 @@ export default class TestApi extends React.Component {
         }
         else{
             if (event.eventType === 0) {
-                this.setState({ selectedWorkTypeOption: -1, selectedHolTypeOption: { value: event.holType, label: holTypes[event.holType] }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+                this.setState({ selectedWorkTypeOption: -1, selectedHolTypeOption: { value: event.holType, label: holTypes[event.holType].value + ' : ' + holTypes[event.holType].label}, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
     
             }
             if (event.eventType === 1) {
-                this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: { value: event.workType, label: workTypes[event.workType] }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+                this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: { value: event.workType, label:   workTypes[event.workType].value + ' : ' + workTypes[event.workType].label }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
     
             }
         }
@@ -243,12 +244,12 @@ export default class TestApi extends React.Component {
                 buttonDisplay={ display: 'none' };;
             }
             var selectHolTypes = [];
-            this.state.holTypes.map((txt, id) => {
-                selectHolTypes.push({ label: txt, value: id });
+            this.state.holTypes.map((holType) => {
+                selectHolTypes.push({ label: holType.value + ' : ' + holType.label, value: holType.id });
             });
             var selectWorkTypes = [];
-            this.state.workTypes.map((txt, id) => {
-                selectWorkTypes.push({ label: txt, value: id });
+            this.state.workTypes.map((workType) => {
+                selectWorkTypes.push({ label:  workType.value + ' : ' + workType.label, value: workType.id });
             });
             var selectDurations = [];
             this.state.durations.map((txt, id) => {

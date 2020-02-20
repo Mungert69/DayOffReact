@@ -73,14 +73,14 @@ function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes
                     };
                     var type ;
                     if (event.eventType === 0){
-                      type = holTypes[event.holType]
+                      type = holTypes[event.holType].value
                     }
                     if (event.eventType === 1){
-                      type =workTypes[event.workType]
+                      type =workTypes[event.workType].value
                     }
                     return event.eventID == -1 ?
                         <TableCell>
-                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)} >{' - '}</a>
+                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)} >{' --- '}</a>
                         </TableCell>
                         : 
                         <TableCell style={style}>

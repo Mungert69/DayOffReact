@@ -30,7 +30,6 @@
     "production": [
       "defaults",
       "not dead"
-
     ],
     "development": [
       "last 1 chrome version",

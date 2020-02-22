@@ -4,7 +4,7 @@ import Select from 'react-select';
 import { Row, Col, Container } from 'react-bootstrap'
 import DataTable from './DataTable';
 
-const apiBaseUrl = 'http://192.168.1.20:10202';
+const apiBaseUrl = 'http://192.168.1.22:10202';
 
 const fontStyle = { color: 'green' };
 const customStyles = {
@@ -143,7 +143,6 @@ export default class TestApi extends React.Component {
         
         if (event===null){return;}
         if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1){return;}
-        const apiBaseUrl = `http://192.168.1.20:10202`;
         var valueType = null;
         var eventType = 0;
         if (selectedHolTypeOption !== -1) {

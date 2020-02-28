@@ -18,6 +18,7 @@ const useStyles = makeStyles({
 function renderTableHeader(weekData,setUserFilter) {
 
     return (
+      
         <TableRow >
             <TableCell> <a  onClick={() => setUserFilter('All')} >All</a> </TableCell>
             <TableCell>{' '} </TableCell>
@@ -96,11 +97,22 @@ function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes
 
 export default function DataTable(props) {
   const classes = useStyles();
-
+  const events=props.weekData.eventData.eventItems;
+  var eventNames='';
+  events.map((event)=>{eventNames+=event.eventName+' , '});
+  if (eventNames.length>0){
+    eventNames = eventNames.slice(0, -3);
+  }
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
+      <Table className={classes.table}  aria-label="TLP Rota">
         <TableHead>
+        <TableRow size="small">
+            <TableCell align="center" colSpan={1}>
+              Events
+            </TableCell>
+  <TableCell align="right" colSpan={7}>{eventNames}</TableCell>
+          </TableRow>
           {renderTableHeader(props.weekData, props.setUserFilter)}
         </TableHead>
         <TableBody>

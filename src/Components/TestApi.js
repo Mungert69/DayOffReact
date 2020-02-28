@@ -3,8 +3,9 @@ import moment from "moment";
 import Select from 'react-select';
 import { Row, Col, Container } from 'react-bootstrap'
 import DataTable from './DataTable';
+import UserContractInfo from './UserContractInfo';
 
-const apiBaseUrl = 'http://192.168.1.20:10202';
+const apiBaseUrl = 'http://192.168.1.22:10202';
 
 const fontStyle = { color: 'green' };
 const customStyles = {
@@ -32,13 +33,14 @@ export default class TestApi extends React.Component {
             selectedHolTypeOption: -1,
             selectedHolWorkOption: -1,
             selectedDurationOption: -1,
-            selectedUser:'None',
+            selectedUser:{firstName : 'None'},
             filterUser : 'All',
             selectedRow: null,
             selectedCol: null,
             event: null,
             result: '',
-            hiddenBut : true
+            hiddenBut : true,
+            hiddenContractInfo : true
         };
     }
 
@@ -203,7 +205,15 @@ export default class TestApi extends React.Component {
         return arrayIndex;
     }
     setUserFilter=(userFilter)=>{
-        this.setState({userFilter : userFilter, hiddenBut: true});
+        if (userFilter=='All'){
+             this.setState({userFilter : userFilter, hiddenBut: true, hiddenContractInfo : true});
+        }
+        else{
+            var user = this.state.users.filter(u => u.firstName.toLowerCase()==userFilter.toLowerCase())[0];
+            this.setState({selectedUser : user ,userFilter : userFilter, hiddenBut: true, hiddenContractInfo : false});
+       
+        }
+       
     }
 
     setEvent = (event, indexRow, indexCol) => {
@@ -225,12 +235,12 @@ export default class TestApi extends React.Component {
        
         this.props.setDate(moment(event.eventDate), null, null, users[this.getUserIndex(event.userID)]);
         const user=users[this.getUserIndex(event.userID)];
-        this.setState({ selectedUser : user.firstName, hiddenBut : false});
+        this.setState({ selectedUser : user, hiddenBut : false});
     }
 
 
     render() {
-        const { weekData, isLoaded, selectedHolTypeOption, selectedWorkTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
+        const { hiddenContractInfo,selectedUser,weekData, isLoaded, selectedHolTypeOption, selectedWorkTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
 
         if (isLoaded) {
             var dateDisplay={};
@@ -258,7 +268,7 @@ export default class TestApi extends React.Component {
                 <span> <Row>
                 <Col ><a o style={{color: 'blue'}} onClick={() => this.props.setHiddenCal(!this.props.hiddenCal)} >Calendar</a></Col>
                 <Col   style={dateDisplay}><span >Selected Date : {this.props.selectedDate.format('DD-MM-YYYY')}</span></Col>
-                <Col >Selected User :<span style={fontStyle}> {this.state.selectedUser}</span></Col>
+                <Col >Selected User :<span style={fontStyle}> {selectedUser.firstName}</span></Col>
                  </Row>
  <Row><Col>{result}</Col></Row>
                     <Row>
@@ -296,7 +306,7 @@ export default class TestApi extends React.Component {
                     <Row >
                         <DataTable weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} setUserFilter={this.setUserFilter} userFilter={this.state.userFilter}  />
                     </Row>
-                   
+                   <Row hidden={hiddenContractInfo}><UserContractInfo user={selectedUser}/></Row>
 
 
                 </span>

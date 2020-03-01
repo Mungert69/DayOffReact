@@ -12,10 +12,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
-  const curr=moment();
-  const first = curr.clone().startOf('week').add(1, 'days').format('DD-MM-YYYY');
-  const last = curr.clone().endOf('week').add(1, 'days').format('DD-MM-YYYY');;
- 
+  const currMinus = moment().add(-1, 'days'); // get current date
+  const curr= moment();
+  const first = currMinus.clone().startOf('week').add(1, 'days').format('DD-MM-YYYY');
+  const last = currMinus.clone().endOf('week').add(1, 'days').format('DD-MM-YYYY');;
+
   const [selectedDate, setSelectedDate] = useState(curr);
   const [fromDate, setFromDate] = useState(first);
   const [toDate, setToDate] = useState(last);
@@ -42,10 +43,10 @@ function App() {
   const onDayClick = (d) => {
 
 
-    const curr = moment(d); // get current date
-
-    const first = curr.clone().startOf('week').add(1, 'days').format('DD-MM-YYYY');
-    const last = curr.clone().endOf('week').add(1, 'days').format('DD-MM-YYYY');;
+    const currMinus = moment(d).add(-1, 'days'); // get current date
+    const curr= moment(d);
+    const first = currMinus.clone().startOf('week').add(1, 'days').format('DD-MM-YYYY');
+    const last = currMinus.clone().endOf('week').add(1, 'days').format('DD-MM-YYYY');;
 
     var firstDay = first.toString();
     var lastDay = last.toString();

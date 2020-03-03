@@ -79,14 +79,16 @@ function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes
                     if (event.eventType === 1){
                       type =workTypes[event.workType].value
                     }
-                    return event.eventID == -1 ?
-                        <TableCell>
+                    if (event.eventID == -1 || event.eventID == -2) {
+                       return event.eventID == -1 ? <TableCell>
                             <a style={style} onClick={() => setEvent(event, indexRow, indexCol)} >{' --- '}</a>
                         </TableCell>
-                        : 
-                        <TableCell style={style}>
+                        :<TableCell></TableCell>
+                        }else{
+                        return <TableCell style={style}>
                             <a style={style} onClick={() => setEvent(event, indexRow, indexCol)}>{type} </a>
-                        </TableCell> 
+                        </TableCell>
+                        }
                 }
 
                 )}

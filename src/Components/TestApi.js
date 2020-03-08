@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import moment from "moment";
 import Select from 'react-select';
-import { Row, Col, Container } from 'react-bootstrap'
+import { Row, Col, Container,Button } from 'react-bootstrap'
 import DataTable from './DataTable';
 import UserContractInfo from './UserContractInfo';
 
@@ -68,7 +68,7 @@ export default class TestApi extends React.Component {
             selectedDurationOption: -1,
             selectedUserTypeOption: -1,
             selectedUser:{firstName : 'None'},
-            userFilter : -1 ,
+            userFilter : 1 ,
             selectedRow: null,
             selectedCol: null,
             event: null,
@@ -297,7 +297,7 @@ export default class TestApi extends React.Component {
 
         if (isLoaded) {
             var dateDisplay={};
-            var buttonDisplay={ color: 'blue' };
+            var buttonDisplay={ };
         
             if (!this.props.hiddenCal){
                 dateDisplay={ display: 'none' };;
@@ -349,14 +349,14 @@ export default class TestApi extends React.Component {
                         ></Select></Col>
                     </Row>
                     <Row><Col>
-                        <a style={buttonDisplay} onClick={() => this.updateEvent()}>
+                        <Button style={buttonDisplay} onClick={() => this.updateEvent()}>
                             Update
-                                     </a>
+                                     </Button>
                     </Col>
                         <Col>
-                            <a style={buttonDisplay} onClick={() => this.deleteEvent()}>
+                            <Button style={buttonDisplay} onClick={() => this.deleteEvent()}>
                                 Delete
-                                     </a>
+                                     </Button>
                         </Col>
                     </Row>
 

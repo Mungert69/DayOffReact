@@ -8,20 +8,68 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import moment from "moment";
+import Select from 'react-select';
 const useStyles = makeStyles({
   table: {
   
   },
 });
+const customStyles = {
+  option: (provided, state) => ({
+      ...provided,
+      border: '1px solid #757575',
+      borderRadius: '0',
+      minHeight: '1px',
+      height: '42px',
+    }),
+    input: (provided) => ({
+      ...provided,
+      minHeight: '1px',
+    }),
+      dropdownIndicator: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+        paddingTop: '0',
+        paddingBottom: '0',
+      }),
+      indicatorSeparator: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+        height: '24px',
+      }),
+      clearIndicator: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+      }),
+      valueContainer: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+        height: '40px',
+        paddingTop: '0',
+        paddingBottom: '0',
+      }),
+      singleValue: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+        paddingBottom: '2px',
+      }),
+  
 
+}
 
-function renderTableHeader(weekData,setUserFilter) {
+function renderTableHeader(weekData,setUserTypeFilter,selectUserTypes,selectedUserTypeOption) {
 
     return (
       
         <TableRow >
-            <TableCell> <a  onClick={() => setUserFilter('All')} >All</a> </TableCell>
-            <TableCell>{' '} </TableCell>
+            <TableCell colSpan={2}>
+            <Select
+                            styles={customStyles}
+                            options={selectUserTypes}
+                            value={selectedUserTypeOption}
+                            onChange={setUserTypeFilter}
+                        ></Select>
+                </TableCell>
             {weekData.headerDates.map((headerDate) => <TableCell >{' '}{moment(headerDate).format('ddd')}{' '}</TableCell>
             )}
             
@@ -49,12 +97,12 @@ function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes
         timeStr='PM'
         userName='';
       }
-      if (userFilter=='All' || userFilter===undefined || userFilter==userNameFilter)
+      if (userFilter==-1 || userFilter==userDataRow.user.userType || userFilter===undefined || userFilter==userNameFilter)
         return (
 
             <TableRow  >
                 <TableCell>
-                <a  onClick={() => setUserFilter(userName)} >{userName}</a>                 
+                <a  onClick={() => setUserFilter(userName,false)} >{userName}</a>                 
                   </TableCell>
                 <TableCell>{timeStr}</TableCell>
                 {userDataRow.userRow.map((event, indexCol) => {
@@ -115,7 +163,7 @@ export default function DataTable(props) {
             </TableCell>
   <TableCell align="right" colSpan={7}>{eventNames}</TableCell>
           </TableRow>
-          {renderTableHeader(props.weekData, props.setUserFilter)}
+          {renderTableHeader(props.weekData, props.setUserTypeFilter,props.selectUserTypes,props.selectedUserTypeOption)}
         </TableHead>
         <TableBody>
           {renderTableBody(props.weekData, props.selectedCol, props.selectedRow, props.durations, props.holTypes,props.workTypes, props.setEvent, props.setUserFilter, props.userFilter)}

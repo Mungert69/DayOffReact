@@ -11,10 +11,42 @@ const fontStyle = { color: 'green' };
 const customStyles = {
     option: (provided, state) => ({
         ...provided,
-        borderBottom: '1px dotted pink',
-        color: state.isSelected ? 'red' : 'blue',
-        padding: 20,
+        border: '1px solid #757575',
+      borderRadius: '0',
+      minHeight: '1px',
+      height: '42px',
     }),
+    input: (provided) => ({
+      ...provided,
+      minHeight: '1px',
+    }),
+      dropdownIndicator: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+        paddingTop: '0',
+        paddingBottom: '0',
+      }),
+      indicatorSeparator: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+        height: '24px',
+      }),
+      clearIndicator: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+      }),
+      valueContainer: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+        height: '40px',
+        paddingTop: '0',
+        paddingBottom: '0',
+      }),
+      singleValue: (provided) => ({
+        ...provided,
+        minHeight: '1px',
+        paddingBottom: '2px',
+      }),
 
 }
 export default class TestApi extends React.Component {
@@ -28,13 +60,15 @@ export default class TestApi extends React.Component {
             weekData: {},
             holTypes: [],
             workTypes: [],
+            userTypes: [],
             durations: [],
             users: [],
             selectedHolTypeOption: -1,
             selectedHolWorkOption: -1,
             selectedDurationOption: -1,
+            selectedUserTypeOption: -1,
             selectedUser:{firstName : 'None'},
-            filterUser : 'All',
+            userFilter : -1 ,
             selectedRow: null,
             selectedCol: null,
             event: null,
@@ -60,7 +94,7 @@ export default class TestApi extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.fromDate !== nextProps.fromDate) {
+        if (this.props.fromDate !== nextProps.fromDate ) {
             this.getData(nextProps);
         }
 
@@ -68,7 +102,17 @@ export default class TestApi extends React.Component {
     componentDidMount() {
 
         this.getData(this.props);
-        var urlStr = apiBaseUrl + `/api/datestable/GetHolTypes`;
+        var urlStr = apiBaseUrl + `/api/datestable/GetUserTypes`;
+        fetch(urlStr)
+            .then(
+                response => response.json(),
+                error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetUserTypes ', error)
+            )
+            .then(data => {
+                this.setState({ userTypes: data })
+            }
+            );
+        urlStr = apiBaseUrl + `/api/datestable/GetHolTypes`;
         fetch(urlStr)
             .then(
                 response => response.json(),
@@ -78,7 +122,7 @@ export default class TestApi extends React.Component {
                 this.setState({ holTypes: data })
             }
             );
-        var urlStr = apiBaseUrl + `/api/datestable/GetWorkTypes`;
+        urlStr = apiBaseUrl + `/api/datestable/GetWorkTypes`;
         fetch(urlStr)
             .then(
                 response => response.json(),
@@ -204,16 +248,25 @@ export default class TestApi extends React.Component {
         })
         return arrayIndex;
     }
-    setUserFilter=(userFilter)=>{
-        if (userFilter=='All'){
-             this.setState({userFilter : userFilter, hiddenBut: true, hiddenContractInfo : true});
+
+    setUserFilter=(userFilter,isTypeFilter)=>{
+        var user='';
+
+      
+        if (isTypeFilter){
+            this.setState({userFilter : userFilter,  hiddenBut: true, hiddenContractInfo : true});
+            return;
         }
-        else{
-            var user = this.state.users.filter(u => u.firstName.toLowerCase()==userFilter.toLowerCase())[0];
-            this.setState({selectedUser : user ,userFilter : userFilter, hiddenBut: true, hiddenContractInfo : false});
        
-        }
-       
+       else{
+           user=this.state.users.filter(u => u.firstName.toLowerCase()==userFilter.toLowerCase())[0];
+           this.setState({selectedUser : user ,userFilter : userFilter, hiddenBut: true, hiddenContractInfo : false});
+      
+       }
+    }
+   
+    setUserTypeFilter=(e)=>{      
+            this.setUserFilter(e.value,true); 
     }
 
     setEvent = (event, indexRow, indexCol) => {
@@ -240,7 +293,7 @@ export default class TestApi extends React.Component {
 
 
     render() {
-        const { hiddenContractInfo,selectedUser,weekData, isLoaded, selectedHolTypeOption, selectedWorkTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
+        const { hiddenContractInfo,selectedUser,weekData, isLoaded, selectedHolTypeOption, selectedWorkTypeOption,selectedUserTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
 
         if (isLoaded) {
             var dateDisplay={};
@@ -259,6 +312,11 @@ export default class TestApi extends React.Component {
             var selectWorkTypes = [];
             this.state.workTypes.map((workType) => {
                 selectWorkTypes.push({ label:  workType.value + ' : ' + workType.label, value: workType.id });
+            });
+            var selectUserTypes = [];
+            selectUserTypes.push({ label: 'All' , value:-1 });
+            this.state.userTypes.map((userType) => {
+                selectUserTypes.push({ label: userType.value , value: userType.id });
             });
             var selectDurations = [];
             this.state.durations.map((txt, id) => {
@@ -304,7 +362,7 @@ export default class TestApi extends React.Component {
 
 
                     <Row >
-                        <DataTable weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} setUserFilter={this.setUserFilter} userFilter={this.state.userFilter}  />
+                        <DataTable setUserTypeFilter={this.setUserTypeFilter} selectUserTypes={selectUserTypes} selectedUserTypeOption={selectedUserTypeOption} weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} setUserFilter={this.setUserFilter} userFilter={this.state.userFilter}  />
                     </Row>
                    <Row hidden={hiddenContractInfo}><UserContractInfo user={selectedUser}/></Row>
 

@@ -87,7 +87,7 @@ export default class TestApi extends React.Component {
                 error => console.log('An error occurred in  TestApi.js :  getData()', error)
             )
             .then(data => {
-                this.setState({ weekData: data, isLoaded: true })
+                this.setState({ weekData: data, isLoaded: true },()=>{props.setDayWorkObjs(data.dayWorkObjs)})
             }
             );
 
@@ -325,6 +325,8 @@ export default class TestApi extends React.Component {
             return (
                 <span> <Row>
                 <Col ><a o style={{color: 'blue'}} onClick={() => this.props.setHiddenCal(!this.props.hiddenCal)} >Calendar</a></Col>
+                <Col ><a o style={{color: 'blue'}} onClick={() => this.props.setHiddenWeekDays(!this.props.hiddenWeekDays)} >Work For Week</a></Col>
+                
                 <Col   style={dateDisplay}><span >Selected Date : {this.props.selectedDate.format('DD-MM-YYYY')}</span></Col>
                 <Col >Selected User :<span style={fontStyle}> {selectedUser.firstName}</span></Col>
                  </Row>

@@ -4,6 +4,7 @@ import './App.css';
 import Calendar from 'react-calendar';
 import { CustomTable } from './Components/table';
 import TestApi from './Components/TestApi';
+import DayWorkTable from './Components/DayWorkTable';
 import moment from "moment";
 import { Row, Col, Container, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,6 +23,8 @@ function App() {
   const [toDate, setToDate] = useState(last);
   const [user, setUser] = useState({});
   const [hiddenCal, setHiddenCal] = useState(false);
+  const [hiddenWeekDays, setHiddenWeekDays] = useState(false);
+  const [dayWorkObjs, setDayWorkObjs]=useState();
  
   const fontStyle = { color: 'green' };
 
@@ -73,11 +76,14 @@ function App() {
               <Calendar  onClickDay={onDayClick}
                 value={selectedDate.toDate()}
               />
+                 </Col>
+            <Col hidden={hiddenWeekDays}>
+             
+              <DayWorkTable hidden={hiddenWeekDays} dayWorkObjs={dayWorkObjs}></DayWorkTable>
             </Col>
-
             <Col >
              
-              <TestApi hiddenCal={hiddenCal} setHiddenCal={setHiddenCal} fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
+              <TestApi setDayWorkObjs={setDayWorkObjs} hiddenCal={hiddenCal} hiddenWeekDays={hiddenWeekDays} setHiddenWeekDays={setHiddenWeekDays} setHiddenCal={setHiddenCal} fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />
             </Col>
           </Row>
         </Container>

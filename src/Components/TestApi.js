@@ -82,16 +82,19 @@ export default class TestApi extends React.Component {
 
 
     getData(props) {
+        this.setState({ loading: true }, () => {
 
-        fetch(apiBaseUrl + '/api/datestable/WeekData/' + props.fromDate + '/' + props.toDate)
+            fetch(apiBaseUrl + '/api/datestable/WeekData/' + props.fromDate + '/' + props.toDate)
             .then(
                 response => response.json(),
                 error => console.log('An error occurred in  TestApi.js :  getData()', error)
             )
             .then(data => {
-                this.setState({ weekData: data, isLoaded: true }, () => { props.setDayWorkObjs(data.dayWorkObjs) })
+                this.setState({ weekData: data, isLoaded: true, loading : false }, () => { props.setDayWorkObjs(data.dayWorkObjs) })
             }
             );
+        });
+        
 
     }
 

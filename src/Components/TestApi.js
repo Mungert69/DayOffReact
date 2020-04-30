@@ -4,13 +4,9 @@ import Select from 'react-select';
 import { Row, Col, Container, Button } from 'react-bootstrap'
 import DataTable from './DataTable';
 import UserContractInfo from './UserContractInfo';
-<<<<<<< HEAD
-import Spinny from './Spinny.gif'; // with import
-const apiBaseUrl = 'http://192.168.1.22:10202';
-=======
 
-const apiBaseUrl = 'http://192.168.1.22:10202';
->>>>>>> 595667377f03e31d0922bcaf4f91c55619e2cf1d
+
+const apiBaseUrl = 'http://192.168.1.20:10202';
 
 const fontStyle = { color: 'green' };
 const customStyles = {

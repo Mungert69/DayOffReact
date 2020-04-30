@@ -5,6 +5,7 @@ import { Row, Col, Container, Button } from 'react-bootstrap'
 import DataTable from './DataTable';
 import UserContractInfo from './UserContractInfo';
 import Spinny from './Spinny.gif'; // with import
+import SpinnyAlt from './SpinnyAlt.gif'
 
 const apiBaseUrl = 'http://192.168.1.20:10202';
 
@@ -305,11 +306,13 @@ export default class TestApi extends React.Component {
 
 
     render() {
-        const { hiddenContractInfo, selectedUser, weekData, isLoaded, selectedHolTypeOption, selectedWorkTypeOption, selectedUserTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
+        const { hiddenContractInfo, selectedUser, weekData, isLoaded, selectedHolTypeOption, selectedWorkTypeOption, selectedUserTypeOption, selectedDurationOption, result, selectedCol, selectedRow, selectedUsers } = this.state;
 
         if (isLoaded) {
             var dateDisplay = {};
             var buttonDisplay = {};
+            var spinnySelect=Spinny;
+            if (selectedUser=='Khalsa'){spinnySelect=SpinnyAlt;}
 
             if (!this.props.hiddenCal) {
                 dateDisplay = { display: 'none' };;
@@ -367,13 +370,13 @@ export default class TestApi extends React.Component {
                        
                             Update
                                      </Button>
-                                     { this.state.loading ?  <img  width="50" height="50"  src={Spinny} />: null }
+                                     { this.state.loading ?  <img  width="50" height="50"  src={spinnySelect} />: null }
                     </Col>
                         <Col>
                             <Button hidden={this.state.loading} style={buttonDisplay} onClick={() => this.deleteEvent()}>
                                 Delete
                                      </Button>
-                                     { this.state.loading ?  <img  width="50" height="50"  src={Spinny} />: null }
+                                     { this.state.loading ?  <img  width="50" height="50"  src={spinnySelect} />: null }
                  
                         </Col>
                     </Row>

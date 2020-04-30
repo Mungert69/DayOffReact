@@ -81,6 +81,8 @@ function App() {
              
               <DayWorkTable hidden={hiddenWeekDays} dayWorkObjs={dayWorkObjs}></DayWorkTable>
             </Col>
+            </Row>
+            <Row>
             <Col >
              
               <TestApi setDayWorkObjs={setDayWorkObjs} hiddenCal={hiddenCal} hiddenWeekDays={hiddenWeekDays} setHiddenWeekDays={setHiddenWeekDays} setHiddenCal={setHiddenCal} fromDate={fromDate} toDate={toDate} setDate={setDate} selectedDate={selectedDate} />

@@ -4,7 +4,7 @@ import Select from 'react-select';
 import { Row, Col, Container, Button } from 'react-bootstrap'
 import DataTable from './DataTable';
 import UserContractInfo from './UserContractInfo';
-
+import Spinny from './Spinny.gif'; // with import
 
 const apiBaseUrl = 'http://192.168.1.20:10202';
 

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import moment from "moment";
 import Select from 'react-select';
-import { Row, Col, Container,Button } from 'react-bootstrap'
+import { Row, Col, Container, Button } from 'react-bootstrap'
 import DataTable from './DataTable';
 import UserContractInfo from './UserContractInfo';
-
+import Spinny from './Spinny.gif'; // with import
 const apiBaseUrl = 'http://192.168.1.22:10202';
 
 const fontStyle = { color: 'green' };
@@ -12,41 +12,41 @@ const customStyles = {
     option: (provided, state) => ({
         ...provided,
         border: '1px solid #757575',
-      borderRadius: '0',
-      minHeight: '1px',
-      height: '42px',
+        borderRadius: '0',
+        minHeight: '1px',
+        height: '42px',
     }),
     input: (provided) => ({
-      ...provided,
-      minHeight: '1px',
+        ...provided,
+        minHeight: '1px',
     }),
-      dropdownIndicator: (provided) => ({
+    dropdownIndicator: (provided) => ({
         ...provided,
         minHeight: '1px',
         paddingTop: '0',
         paddingBottom: '0',
-      }),
-      indicatorSeparator: (provided) => ({
+    }),
+    indicatorSeparator: (provided) => ({
         ...provided,
         minHeight: '1px',
         height: '24px',
-      }),
-      clearIndicator: (provided) => ({
+    }),
+    clearIndicator: (provided) => ({
         ...provided,
         minHeight: '1px',
-      }),
-      valueContainer: (provided) => ({
+    }),
+    valueContainer: (provided) => ({
         ...provided,
         minHeight: '1px',
         height: '40px',
         paddingTop: '0',
         paddingBottom: '0',
-      }),
-      singleValue: (provided) => ({
+    }),
+    singleValue: (provided) => ({
         ...provided,
         minHeight: '1px',
         paddingBottom: '2px',
-      }),
+    }),
 
 }
 export default class TestApi extends React.Component {
@@ -67,14 +67,15 @@ export default class TestApi extends React.Component {
             selectedHolWorkOption: -1,
             selectedDurationOption: -1,
             selectedUserTypeOption: -1,
-            selectedUser:{firstName : 'None'},
-            userFilter : 1 ,
+            selectedUser: { firstName: 'None' },
+            userFilter: 1,
             selectedRow: null,
             selectedCol: null,
             event: null,
             result: '',
-            hiddenBut : true,
-            hiddenContractInfo : true
+            hiddenBut: true,
+            hiddenContractInfo: true,
+            loading: false
         };
     }
 
@@ -87,14 +88,14 @@ export default class TestApi extends React.Component {
                 error => console.log('An error occurred in  TestApi.js :  getData()', error)
             )
             .then(data => {
-                this.setState({ weekData: data, isLoaded: true },()=>{props.setDayWorkObjs(data.dayWorkObjs)})
+                this.setState({ weekData: data, isLoaded: true }, () => { props.setDayWorkObjs(data.dayWorkObjs) })
             }
             );
 
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.fromDate !== nextProps.fromDate ) {
+        if (this.props.fromDate !== nextProps.fromDate) {
             this.getData(nextProps);
         }
 
@@ -129,7 +130,7 @@ export default class TestApi extends React.Component {
                 error => console.log('An error occurred in  TestApi.js : componentDidMount() fetch /api/datestable/GetWorkTypes ', error)
             )
             .then(data => {
-                
+
                 this.setState({ workTypes: data })
             }
             );
@@ -168,9 +169,9 @@ export default class TestApi extends React.Component {
     }
 
     deleteEvent() {
-        const { event,selectedHolTypeOption,selectedWorkTypeOption } = this.state;
-        if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1){return;}
-        if (event===null){return;}
+        const { event, selectedHolTypeOption, selectedWorkTypeOption } = this.state;
+        if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1) { return; }
+        if (event === null) { return; }
         const urlStr = apiBaseUrl + `/api/datestable/DeleteEvent/` + event.eventID + `/` + event.eventType + '/';
         fetch(urlStr)
             .then(
@@ -178,7 +179,7 @@ export default class TestApi extends React.Component {
                 error => console.log('An error occurred in  TestApi.js : deleteEvent()', error)
             )
             .then(data => {
-                this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1, event : null, hiddenBut : true }, () => { this.getData(this.props); })
+                this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1, event: null, hiddenBut: true }, () => { this.getData(this.props); })
             }
             );
     }
@@ -186,54 +187,57 @@ export default class TestApi extends React.Component {
 
     updateEvent() {
         const { event, selectedDurationOption, selectedWorkTypeOption, selectedHolTypeOption } = this.state;
-        
-        if (event===null){return;}
-        if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1){return;}
-        var valueType = null;
-        var eventType = 0;
-        if (selectedHolTypeOption !== -1) {
-            valueType = selectedHolTypeOption && selectedHolTypeOption.value;
-            eventType = 0;
-        }
-        if (selectedWorkTypeOption !== -1) {
-            valueType = selectedWorkTypeOption && selectedWorkTypeOption.value;
-            eventType = 1;
-        }
+        this.setState({ loading: true }, () => {
+            if (event === null) { return; }
+            if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1) { return; }
+            var valueType = null;
+            var eventType = 0;
+            if (selectedHolTypeOption !== -1) {
+                valueType = selectedHolTypeOption && selectedHolTypeOption.value;
+                eventType = 0;
+            }
+            if (selectedWorkTypeOption !== -1) {
+                valueType = selectedWorkTypeOption && selectedWorkTypeOption.value;
+                eventType = 1;
+            }
 
 
-        const valueDuration = selectedDurationOption && selectedDurationOption.value;
-        var urlStr = '';
-        var eventID = event.eventID;
+            const valueDuration = selectedDurationOption && selectedDurationOption.value;
+            var urlStr = '';
+            var eventID = event.eventID;
 
-        if (eventID !== -1 && eventType !== event.eventType) {
-            urlStr = apiBaseUrl + `/api/datestable/SwapEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/'  + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/' + eventType + '/' +event.eventType+'/' + event.eventID+'/'
-        }
-        else {
-            if (eventID === -1) {
-
-                urlStr = apiBaseUrl + `/api/datestable/CreateEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/' + eventType + '/'
-
+            if (eventID !== -1 && eventType !== event.eventType) {
+                urlStr = apiBaseUrl + `/api/datestable/SwapEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/' + eventType + '/' + event.eventType + '/' + event.eventID + '/'
             }
             else {
+                if (eventID === -1) {
 
-                urlStr = apiBaseUrl + `/api/datestable/UpdateEvent/` + event.eventID + `/` + valueType + '/' + valueDuration + '/' + eventType + '/'
+                    urlStr = apiBaseUrl + `/api/datestable/CreateEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/' + eventType + '/'
+
+                }
+                else {
+
+                    urlStr = apiBaseUrl + `/api/datestable/UpdateEvent/` + event.eventID + `/` + valueType + '/' + valueDuration + '/' + eventType + '/'
+
+                }
 
             }
 
-        }
+
+            const test = '';
+            fetch(urlStr)
+                .then(
+                    response => response.json(),
+                    error => console.log('An error occurred in  TestApi.js : updateEvent', error)
+                )
+                .then(data => {
+                    this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1, hiddenBut: true, loading: false }, () => { this.getData(this.props); })
+                }
+                );
 
 
-        const test = '';
-        fetch(urlStr)
-            .then(
-                response => response.json(),
-                error => console.log('An error occurred in  TestApi.js : updateEvent', error)
-            )
-            .then(data => {
-                this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1, hiddenBut : true }, () => { this.getData(this.props); })
-            }
-            );
 
+        });
 
     }
 
@@ -249,61 +253,61 @@ export default class TestApi extends React.Component {
         return arrayIndex;
     }
 
-    setUserFilter=(userFilter,isTypeFilter)=>{
-        var user='';
+    setUserFilter = (userFilter, isTypeFilter) => {
+        var user = '';
 
-      
-        if (isTypeFilter){
-            this.setState({userFilter : userFilter,  hiddenBut: true, hiddenContractInfo : true});
+
+        if (isTypeFilter) {
+            this.setState({ userFilter: userFilter, hiddenBut: true, hiddenContractInfo: true });
             return;
         }
-       
-       else{
-           user=this.state.users.filter(u => u.firstName.toLowerCase()==userFilter.toLowerCase())[0];
-           this.setState({selectedUser : user ,userFilter : userFilter, hiddenBut: true, hiddenContractInfo : false});
-      
-       }
+
+        else {
+            user = this.state.users.filter(u => u.firstName.toLowerCase() == userFilter.toLowerCase())[0];
+            this.setState({ selectedUser: user, userFilter: userFilter, hiddenBut: true, hiddenContractInfo: false });
+
+        }
     }
-   
-    setUserTypeFilter=(e)=>{      
-            this.setUserFilter(e.value,true); 
+
+    setUserTypeFilter = (e) => {
+        this.setUserFilter(e.value, true);
     }
 
     setEvent = (event, indexRow, indexCol) => {
         const { holTypes, workTypes, durations, users, userDataRows, selectedCol, selectedRow } = this.state;
-        if (event.eventID===-1){
+        if (event.eventID === -1) {
             this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: -1, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
-    
+
         }
-        else{
+        else {
             if (event.eventType === 0) {
-                this.setState({ selectedWorkTypeOption: -1, selectedHolTypeOption: { value: event.holType, label: holTypes[event.holType].value + ' : ' + holTypes[event.holType].label}, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
-    
+                this.setState({ selectedWorkTypeOption: -1, selectedHolTypeOption: { value: event.holType, label: holTypes[event.holType].value + ' : ' + holTypes[event.holType].label }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+
             }
             if (event.eventType === 1) {
-                this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: { value: event.workType, label:   workTypes[event.workType].value + ' : ' + workTypes[event.workType].label }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
-    
+                this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: { value: event.workType, label: workTypes[event.workType].value + ' : ' + workTypes[event.workType].label }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+
             }
         }
-       
+
         this.props.setDate(moment(event.eventDate), null, null, users[this.getUserIndex(event.userID)]);
-        const user=users[this.getUserIndex(event.userID)];
-        this.setState({ selectedUser : user, hiddenBut : false});
+        const user = users[this.getUserIndex(event.userID)];
+        this.setState({ selectedUser: user, hiddenBut: false });
     }
 
 
     render() {
-        const { hiddenContractInfo,selectedUser,weekData, isLoaded, selectedHolTypeOption, selectedWorkTypeOption,selectedUserTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
+        const { hiddenContractInfo, selectedUser, weekData, isLoaded, selectedHolTypeOption, selectedWorkTypeOption, selectedUserTypeOption, selectedDurationOption, result, selectedCol, selectedRow } = this.state;
 
         if (isLoaded) {
-            var dateDisplay={};
-            var buttonDisplay={ };
-        
-            if (!this.props.hiddenCal){
-                dateDisplay={ display: 'none' };;
+            var dateDisplay = {};
+            var buttonDisplay = {};
+
+            if (!this.props.hiddenCal) {
+                dateDisplay = { display: 'none' };;
             }
-            if (this.state.hiddenBut){
-                buttonDisplay={ display: 'none' };;
+            if (this.state.hiddenBut) {
+                buttonDisplay = { display: 'none' };;
             }
             var selectHolTypes = [];
             this.state.holTypes.map((holType) => {
@@ -311,12 +315,12 @@ export default class TestApi extends React.Component {
             });
             var selectWorkTypes = [];
             this.state.workTypes.map((workType) => {
-                selectWorkTypes.push({ label:  workType.value + ' : ' + workType.label, value: workType.id });
+                selectWorkTypes.push({ label: workType.value + ' : ' + workType.label, value: workType.id });
             });
             var selectUserTypes = [];
-            selectUserTypes.push({ label: 'All' , value:-1 });
+            selectUserTypes.push({ label: 'All', value: -1 });
             this.state.userTypes.map((userType) => {
-                selectUserTypes.push({ label: userType.value , value: userType.id });
+                selectUserTypes.push({ label: userType.value, value: userType.id });
             });
             var selectDurations = [];
             this.state.durations.map((txt, id) => {
@@ -324,19 +328,19 @@ export default class TestApi extends React.Component {
             });
             return (
                 <span> <Row>
-                <Col ><a o style={{color: 'blue'}} onClick={() => this.props.setHiddenCal(!this.props.hiddenCal)} >Calendar</a></Col>
-                <Col ><a o style={{color: 'blue'}} onClick={() => this.props.setHiddenWeekDays(!this.props.hiddenWeekDays)} >Work For Week</a></Col>
-                
-                <Col   style={dateDisplay}><span >Selected Date : {this.props.selectedDate.format('DD-MM-YYYY')}</span></Col>
-                <Col >Selected User :<span style={fontStyle}> {selectedUser.firstName}</span></Col>
-                 </Row>
- <Row><Col>{result}</Col></Row>
+                    <Col ><a o style={{ color: 'blue' }} onClick={() => this.props.setHiddenCal(!this.props.hiddenCal)} >Calendar</a></Col>
+                    <Col ><a o style={{ color: 'blue' }} onClick={() => this.props.setHiddenWeekDays(!this.props.hiddenWeekDays)} >Work For Week</a></Col>
+
+                    <Col style={dateDisplay}><span >Selected Date : {this.props.selectedDate.format('DD-MM-YYYY')}</span></Col>
+                    <Col >Selected User :<span style={fontStyle}> {selectedUser.firstName}</span></Col>
+                </Row>
+                    <Row><Col>{result}</Col></Row>
                     <Row>
                         <Col>Holiday Type</Col>
                         <Col>Work Type</Col>
                     </Row>
                     <Row>
-                        
+
                         <Col > <Select
                             styles={customStyles}
                             options={selectHolTypes}
@@ -350,23 +354,27 @@ export default class TestApi extends React.Component {
                             onChange={this.handleWorkTypeChange}
                         ></Select></Col>
                     </Row>
-                    <Row><Col>
-                        <Button style={buttonDisplay} onClick={() => this.updateEvent()}>
+                    <Row><Col >
+                        <Button hidden={this.state.loading} style={buttonDisplay} onClick={() => this.updateEvent()}>
+                       
                             Update
                                      </Button>
+                                     { this.state.loading ?  <img  width="50" height="50"  src={Spinny} />: null }
                     </Col>
                         <Col>
-                            <Button style={buttonDisplay} onClick={() => this.deleteEvent()}>
+                            <Button hidden={this.state.loading} style={buttonDisplay} onClick={() => this.deleteEvent()}>
                                 Delete
                                      </Button>
+                                     { this.state.loading ?  <img  width="50" height="50"  src={Spinny} />: null }
+                 
                         </Col>
                     </Row>
 
 
                     <Row >
-                        <DataTable setUserTypeFilter={this.setUserTypeFilter} selectUserTypes={selectUserTypes} selectedUserTypeOption={selectedUserTypeOption} weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} setUserFilter={this.setUserFilter} userFilter={this.state.userFilter}  />
+                        <DataTable setUserTypeFilter={this.setUserTypeFilter} selectUserTypes={selectUserTypes} selectedUserTypeOption={selectedUserTypeOption} weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} setUserFilter={this.setUserFilter} userFilter={this.state.userFilter} />
                     </Row>
-                   <Row hidden={hiddenContractInfo}><UserContractInfo user={selectedUser}/></Row>
+                    <Row hidden={hiddenContractInfo}><UserContractInfo user={selectedUser} /></Row>
 
 
                 </span>
@@ -377,7 +385,7 @@ export default class TestApi extends React.Component {
             return (
                 <span>
                     Loading...
-            </span>
+                </span>
             );
 
         }

@@ -170,19 +170,23 @@ export default class TestApi extends React.Component {
 
     deleteEvent() {
         const { event, selectedHolTypeOption, selectedWorkTypeOption } = this.state;
-        if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1) { return; }
-        if (event === null) { return; }
-        const urlStr = apiBaseUrl + `/api/datestable/DeleteEvent/` + event.eventID + `/` + event.eventType + '/';
-        fetch(urlStr)
-            .then(
-                response => response.json(),
-                error => console.log('An error occurred in  TestApi.js : deleteEvent()', error)
-            )
-            .then(data => {
-                this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1, event: null, hiddenBut: true }, () => { this.getData(this.props); })
-            }
-            );
-    }
+        this.setState({ loading: true }, () => {
+            if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1) { return; }
+            if (event === null) { return; }
+            const urlStr = apiBaseUrl + `/api/datestable/DeleteEvent/` + event.eventID + `/` + event.eventType + '/';
+            fetch(urlStr)
+                .then(
+                    response => response.json(),
+                    error => console.log('An error occurred in  TestApi.js : deleteEvent()', error)
+                )
+                .then(data => {
+                    this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1, event: null, hiddenBut: true, loading : false }, () => { this.getData(this.props); })
+                }
+                );
+    
+        });
+
+          }
 
 
     updateEvent() {

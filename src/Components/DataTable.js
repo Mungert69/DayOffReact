@@ -58,17 +58,18 @@ const customStyles = {
 }
 
 function renderTableHeader(weekData,setUserTypeFilter,selectUserTypes,selectedUserTypeOption) {
-
+ 
     return (
       
         <TableRow >
             <TableCell colSpan={2}>
-            <Select
+              <div><Select 
                             styles={customStyles}
                             options={selectUserTypes}
                             value={selectedUserTypeOption}
                             onChange={setUserTypeFilter}
-                        ></Select>
+                        ></Select></div>
+           
                 </TableCell>
             {weekData.headerDates.map((headerDate) => <TableCell >{' '}{moment(headerDate).format('ddd')}{' '}</TableCell>
             )}

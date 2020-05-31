@@ -75,7 +75,7 @@ export default class TestApi extends React.Component {
             selectedRow: null,
             selectedCol: null,
             event: null,
-            result: '',
+            result: null,
             hiddenBut: true,
             hiddenContractInfo: true,
             loading: false
@@ -164,7 +164,7 @@ export default class TestApi extends React.Component {
 
 
     handleResultClick = () => {
-        this.setState({ result: '' });
+        this.setState({ result: null});
     }
     handleHolTypeChange = (selectedHolTypeOption) => {
         this.setState({ selectedHolTypeOption, selectedWorkTypeOption: -1 });
@@ -290,16 +290,16 @@ export default class TestApi extends React.Component {
     setEvent = (event, indexRow, indexCol) => {
         const { holTypes, workTypes, durations, users, userDataRows, selectedCol, selectedRow } = this.state;
         if (event.eventID === -1) {
-            this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: -1, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+            this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: -1, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: null, selectedRow: indexRow, selectedCol: indexCol });
 
         }
         else {
             if (event.eventType === 0) {
-                this.setState({ selectedWorkTypeOption: -1, selectedHolTypeOption: { value: event.holType, label: holTypes[event.holType].value + ' : ' + holTypes[event.holType].label }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+                this.setState({ selectedWorkTypeOption: -1, selectedHolTypeOption: { value: event.holType, label: holTypes[event.holType].value + ' : ' + holTypes[event.holType].label }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: null, selectedRow: indexRow, selectedCol: indexCol });
 
             }
             if (event.eventType === 1) {
-                this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: { value: event.workType, label: workTypes[event.workType].value + ' : ' + workTypes[event.workType].label }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: '', selectedRow: indexRow, selectedCol: indexCol });
+                this.setState({ selectedHolTypeOption: -1, selectedWorkTypeOption: { value: event.workType, label: workTypes[event.workType].value + ' : ' + workTypes[event.workType].label }, selectedDurationOption: { value: event.duration, label: durations[event.duration] }, event: event, result: null, selectedRow: indexRow, selectedCol: indexCol });
 
             }
         }

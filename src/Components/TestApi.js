@@ -3,11 +3,12 @@ import moment from "moment";
 import Select from 'react-select';
 import { Row, Col, Container, Button } from 'react-bootstrap'
 import DataTable from './DataTable';
+import ResultComp from './ResultComp';
 import UserContractInfo from './UserContractInfo';
 import Spinny from './Spinny.gif'; // with import
 import SpinnyAlt from './SpinnyAlt.gif'
 
-const apiBaseUrl = 'http://192.168.1.20:10202';
+const apiBaseUrl = 'http://192.168.1.22:10202';
 
 const fontStyle = { color: 'green' };
 const customStyles = {
@@ -161,6 +162,10 @@ export default class TestApi extends React.Component {
             );
     }
 
+
+    handleResultClick = () => {
+        this.setState({ result: '' });
+    }
     handleHolTypeChange = (selectedHolTypeOption) => {
         this.setState({ selectedHolTypeOption, selectedWorkTypeOption: -1 });
     }
@@ -347,7 +352,7 @@ export default class TestApi extends React.Component {
                     <Col style={dateDisplay}><span >Selected Date : {this.props.selectedDate.format('DD-MM-YYYY')}</span></Col>
                     <Col >Selected User :<span style={fontStyle}> {selectedUser.firstName}</span></Col>
                 </Row>
-                    <Row><Col>{result}</Col></Row>
+                    <Row><Col><ResultComp handleResultClick={this.handleResultClick } result={result}></ResultComp></Col></Row>
                     <Row>
                         <Col>Holiday Type</Col>
                         <Col>Work Type</Col>

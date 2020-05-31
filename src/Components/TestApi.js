@@ -317,10 +317,7 @@ export default class TestApi extends React.Component {
             var dateDisplay = {};
             var buttonDisplay = {};
             var spinnySelect=Spinny;
-            if (selectedUser.firstName=='Khalsa'){
-                spinnySelect=SpinnyAlt;
-            }
-
+           
             if (!this.props.hiddenCal) {
                 dateDisplay = { display: 'none' };;
             }

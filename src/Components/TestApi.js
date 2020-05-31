@@ -8,7 +8,7 @@ import UserContractInfo from './UserContractInfo';
 import Spinny from './Spinny.gif'; // with import
 import SpinnyAlt from './SpinnyAlt.gif'
 
-const apiBaseUrl = 'http://192.168.1.22:10202';
+const apiBaseUrl = 'http://192.168.1.20:10202';
 
 const fontStyle = { color: 'green' };
 const customStyles = {

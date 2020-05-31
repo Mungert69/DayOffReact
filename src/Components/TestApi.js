@@ -8,7 +8,7 @@ import UserContractInfo from './UserContractInfo';
 import Spinny from './Spinny.gif'; // with import
 import SpinnyAlt from './SpinnyAlt.gif'
 
-const apiBaseUrl = 'http://192.168.1.20:10202';
+const apiBaseUrl = 'http://192.168.1.22:10202';
 
 const fontStyle = { color: 'green' };
 const customStyles = {
@@ -87,16 +87,16 @@ export default class TestApi extends React.Component {
         this.setState({ loading: true }, () => {
 
             fetch(apiBaseUrl + '/api/datestable/WeekData/' + props.fromDate + '/' + props.toDate)
-            .then(
-                response => response.json(),
-                error => console.log('An error occurred in  TestApi.js :  getData()', error)
-            )
-            .then(data => {
-                this.setState({ weekData: data, isLoaded: true, loading : false }, () => { props.setDayWorkObjs(data.dayWorkObjs) })
-            }
-            );
+                .then(
+                    response => response.json(),
+                    error => console.log('An error occurred in  TestApi.js :  getData()', error)
+                )
+                .then(data => {
+                    this.setState({ weekData: data, isLoaded: true, loading: false }, () => { props.setDayWorkObjs(data.dayWorkObjs) })
+                }
+                );
         });
-        
+
 
     }
 
@@ -164,7 +164,7 @@ export default class TestApi extends React.Component {
 
 
     handleResultClick = () => {
-        this.setState({ result: null});
+        this.setState({ result: null });
     }
     handleHolTypeChange = (selectedHolTypeOption) => {
         this.setState({ selectedHolTypeOption, selectedWorkTypeOption: -1 });
@@ -190,13 +190,13 @@ export default class TestApi extends React.Component {
                     error => console.log('An error occurred in  TestApi.js : deleteEvent()', error)
                 )
                 .then(data => {
-                    this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1, event: null, hiddenBut: true, loading : false }, () => { this.getData(this.props); })
+                    this.setState({ result: data, isLoaded: true, selectedRow: -1, selectedCol: -1, event: null, hiddenBut: true, loading: false }, () => { this.getData(this.props); })
                 }
                 );
-    
+
         });
 
-          }
+    }
 
 
     updateEvent() {
@@ -316,8 +316,8 @@ export default class TestApi extends React.Component {
         if (isLoaded) {
             var dateDisplay = {};
             var buttonDisplay = {};
-            var spinnySelect=Spinny;
-           
+            var spinnySelect = Spinny;
+
             if (!this.props.hiddenCal) {
                 dateDisplay = { display: 'none' };;
             }
@@ -349,13 +349,14 @@ export default class TestApi extends React.Component {
                     <Col style={dateDisplay}><span >Selected Date : {this.props.selectedDate.format('DD-MM-YYYY')}</span></Col>
                     <Col >Selected User :<span style={fontStyle}> {selectedUser.firstName}</span></Col>
                 </Row>
-                    <Row><Col><ResultComp handleResultClick={this.handleResultClick } result={result}></ResultComp></Col></Row>
-                    <Row>
-                        <Col>Holiday Type</Col>
-                        <Col>Work Type</Col>
-                    </Row>
+                    <Row><Col><ResultComp handleResultClick={this.handleResultClick} result={result}></ResultComp></Col></Row>
                     <Row>
 
+                        <Col>Holiday Type</Col>
+                        <Col>Work Type</Col>
+                        <Col>User Type</Col>
+                    </Row>
+                    <Row>
                         <Col > <Select
                             styles={customStyles}
                             options={selectHolTypes}
@@ -368,26 +369,33 @@ export default class TestApi extends React.Component {
                             value={selectedWorkTypeOption}
                             onChange={this.handleWorkTypeChange}
                         ></Select></Col>
+                        <Col > <Select
+                            styles={customStyles}
+                            options={selectUserTypes}
+                            value={selectedUserTypeOption}
+                            onChange={this.setUserTypeFilter}
+                        ></Select></Col>
+
                     </Row>
                     <Row><Col >
                         <Button hidden={this.state.loading} style={buttonDisplay} onClick={() => this.updateEvent()}>
-                       
+
                             Update
                                      </Button>
-                                     { this.state.loading ?  <img  width="50" height="50"  src={spinnySelect} />: null }
+                        {this.state.loading ? <img width="50" height="50" src={spinnySelect} /> : null}
                     </Col>
                         <Col>
                             <Button hidden={this.state.loading} style={buttonDisplay} onClick={() => this.deleteEvent()}>
                                 Delete
                                      </Button>
-                                     { this.state.loading ?  <img  width="50" height="50"  src={spinnySelect} />: null }
-                 
+                            {this.state.loading ? <img width="50" height="50" src={spinnySelect} /> : null}
+
                         </Col>
                     </Row>
 
 
                     <Row >
-                        <DataTable setUserTypeFilter={this.setUserTypeFilter} selectUserTypes={selectUserTypes} selectedUserTypeOption={selectedUserTypeOption} weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} setUserFilter={this.setUserFilter} userFilter={this.state.userFilter} />
+                        <DataTable weekData={weekData} selectedCol={selectedCol} selectedRow={selectedRow} durations={this.state.durations} holTypes={this.state.holTypes} workTypes={this.state.workTypes} setEvent={this.setEvent} setUserFilter={this.setUserFilter} userFilter={this.state.userFilter} />
                     </Row>
                     <Row hidden={hiddenContractInfo}><UserContractInfo user={selectedUser} /></Row>
 

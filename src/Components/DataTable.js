@@ -11,163 +11,156 @@ import moment from "moment";
 import Select from 'react-select';
 const useStyles = makeStyles({
   table: {
-  
+
   },
 });
 const customStyles = {
   option: (provided, state) => ({
-      ...provided,
-      border: '1px solid #757575',
-      borderRadius: '0',
-      minHeight: '1px',
-      height: '42px',
-    }),
-    input: (provided) => ({
-      ...provided,
-      minHeight: '1px',
-    }),
-      dropdownIndicator: (provided) => ({
-        ...provided,
-        minHeight: '1px',
-        paddingTop: '0',
-        paddingBottom: '0',
-      }),
-      indicatorSeparator: (provided) => ({
-        ...provided,
-        minHeight: '1px',
-        height: '24px',
-      }),
-      clearIndicator: (provided) => ({
-        ...provided,
-        minHeight: '1px',
-      }),
-      valueContainer: (provided) => ({
-        ...provided,
-        minHeight: '1px',
-        height: '40px',
-        paddingTop: '0',
-        paddingBottom: '0',
-      }),
-      singleValue: (provided) => ({
-        ...provided,
-        minHeight: '1px',
-        paddingBottom: '2px',
-      }),
-  
+    ...provided,
+    border: '1px solid #757575',
+    borderRadius: '0',
+    minHeight: '1px',
+    height: '42px',
+  }),
+  input: (provided) => ({
+    ...provided,
+    minHeight: '1px',
+  }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    minHeight: '1px',
+    paddingTop: '0',
+    paddingBottom: '0',
+  }),
+  indicatorSeparator: (provided) => ({
+    ...provided,
+    minHeight: '1px',
+    height: '24px',
+  }),
+  clearIndicator: (provided) => ({
+    ...provided,
+    minHeight: '1px',
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    minHeight: '1px',
+    height: '40px',
+    paddingTop: '0',
+    paddingBottom: '0',
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    minHeight: '1px',
+    paddingBottom: '2px',
+  }),
+
 
 }
 
-function renderTableHeader(weekData,setUserTypeFilter,selectUserTypes,selectedUserTypeOption) {
- 
-    return (
-      
-        <TableRow >
-            <TableCell colSpan={2}>
-              <div><Select 
-                            styles={customStyles}
-                            options={selectUserTypes}
-                            value={selectedUserTypeOption}
-                            onChange={setUserTypeFilter}
-                        ></Select></div>
-           
-                </TableCell>
-            {weekData.headerDates.map((headerDate) => <TableCell >{' '}{moment(headerDate).format('ddd')}{' '}</TableCell>
-            )}
-            
-          </TableRow>
-       )
+function renderTableHeader(weekData) {
+
+  return (
+
+    <TableRow >
+      <TableCell colSpan={2}>
+        
+
+      </TableCell>
+      {weekData.headerDates.map((headerDate) => <TableCell >{' '}{moment(headerDate).format('ddd')}{' '}</TableCell>
+      )}
+
+    </TableRow>
+  )
 
 
 }
 
 
 
-function renderTableBody(weekData, selectedCol, selectedRow, durations, holTypes, workTypes,setEvent,setUserFilter,userFilter) {
-    return weekData.userDataRows.map((userDataRow, indexRow) => {
-      var timeStr='';
-      var userName='';
-      const userNameFilter= userDataRow.user.firstName;
+function renderTableBody(weekData, selectedCol, selectedRow, holTypes, workTypes, setEvent, setUserFilter, userFilter) {
+  return weekData.userDataRows.map((userDataRow, indexRow) => {
+    var timeStr = '';
+    var userName = '';
+    const userNameFilter = userDataRow.user.firstName;
 
-      if ( indexRow % 2 == 0)
-      {
-        timeStr='AM'
-        userName= userDataRow.user.firstName;
-      }
-      else
-      {
-        timeStr='PM'
-        userName='';
-      }
-      if (userFilter==-1 || userFilter==userDataRow.user.userType || userFilter===undefined || userFilter==userNameFilter)
-        return (
+    if (indexRow % 2 == 0) {
+      timeStr = 'AM'
+      userName = userDataRow.user.firstName;
+    }
+    else {
+      timeStr = 'PM'
+      userName = '';
+    }
+    if (userFilter == -1 || userFilter == userDataRow.user.userType || userFilter === undefined || userFilter == userNameFilter)
+      return (
 
-            <TableRow  >
-                <TableCell>
-                <a  onClick={() => setUserFilter(userName,false)} >{userName}</a>                 
-                  </TableCell>
-                <TableCell>{timeStr}</TableCell>
-                {userDataRow.userRow.map((event, indexCol) => {
-                    var style = {
-                            color: 'black',
-                          };
-                          if ( indexRow === selectedRow) {
-                            style = {
-                                color: 'blue'
-                              };
-                        };
-                    if ( indexCol === selectedCol && indexRow === selectedRow) {
-                        style = {
-                            font: 'bold',
-                            color: 'red'
-                          };
-                    };
-                    var type ;
-                    if (event.eventType === 0){
-                      type = holTypes[event.holType].value
-                    }
-                    if (event.eventType === 1){
-                      type =workTypes[event.workType].value
-                    }
-                    if (event.eventID == -1 || event.eventID == -2) {
-                       return event.eventID == -1 ? <TableCell>
-                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)} >{' --- '}</a>
-                        </TableCell>
-                        :<TableCell></TableCell>
-                        }else{
-                        return <TableCell style={style}>
-                            <a style={style} onClick={() => setEvent(event, indexRow, indexCol)}>{type} </a>
-                        </TableCell>
-                        }
-                }
+        <TableRow  >
+          <TableCell>
+            <a onClick={() => setUserFilter(userName, false)} >{userName}</a>
+          </TableCell>
+          <TableCell>{timeStr}</TableCell>
+          {userDataRow.userRow.map((event, indexCol) => {
+            var style = {
+              color: 'black',
+            };
+            if (indexRow === selectedRow) {
+              style = {
+                color: 'blue'
+              };
+            };
+            if (indexCol === selectedCol && indexRow === selectedRow) {
+              style = {
+                font: 'bold',
+                color: 'red'
+              };
+            };
+            var type;
+            if (event.eventType === 0) {
+              type = holTypes[event.holType].value
+            }
+            if (event.eventType === 1) {
+              type = workTypes[event.workType].value
+            }
+            if (event.eventID == -1 || event.eventID == -2) {
+              return event.eventID == -1 ? <TableCell>
+                <a style={style} onClick={() => setEvent(event, indexRow, indexCol)} >{' --- '}</a>
+              </TableCell>
+                : <TableCell></TableCell>
+            } else {
+              return <TableCell style={style}>
+                <a style={style} onClick={() => setEvent(event, indexRow, indexCol)}>{type} </a>
+              </TableCell>
+            }
+          }
 
-                )}
-            </TableRow>
-        )
-    })
+          )}
+        </TableRow>
+      )
+  })
 }
 
 export default function DataTable(props) {
   const classes = useStyles();
-  const events=props.weekData.eventData.eventItems;
-  var eventNames='';
-  events.map((event)=>{eventNames+=event.eventName+' , '});
-  if (eventNames.length>0){
+  const events = props.weekData.eventData.eventItems;
+  var eventNames = '';
+  events.map((event) => { eventNames += event.eventName + ' , ' });
+  if (eventNames.length > 0) {
     eventNames = eventNames.slice(0, -3);
   }
   return (
     <TableContainer component={Paper}>
-      <Table className={classes.table}  aria-label="TLP Rota">
+      <Table className={classes.table} aria-label="TLP Rota">
         <TableHead>
-        <TableRow size="small">
+          <TableRow size="small">
             <TableCell align="center" colSpan={1}>
               Events
             </TableCell>
-  <TableCell align="right" colSpan={7}>{eventNames}</TableCell>
+            <TableCell align="right" colSpan={7}>{eventNames}</TableCell>
           </TableRow>
-          {renderTableHeader(props.weekData, props.setUserTypeFilter,props.selectUserTypes,props.selectedUserTypeOption)}
+          {renderTableHeader(props.weekData)}
         </TableHead>
         <TableBody>
-          {renderTableBody(props.weekData, props.selectedCol, props.selectedRow, props.durations, props.holTypes,props.workTypes, props.setEvent, props.setUserFilter, props.userFilter)}
+          {renderTableBody(props.weekData, props.selectedCol, props.selectedRow, props.holTypes, props.workTypes, props.setEvent, props.setUserFilter, props.userFilter)}
         </TableBody>
       </Table>
     </TableContainer>

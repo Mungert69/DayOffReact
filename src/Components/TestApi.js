@@ -180,10 +180,11 @@ export default class TestApi extends React.Component {
 
     deleteEvent() {
         const { event, selectedHolTypeOption, selectedWorkTypeOption } = this.state;
+        if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1) { return; }
+        if (event === null) { return; }
+     
         this.setState({ loading: true }, () => {
-            if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1) { return; }
-            if (event === null) { return; }
-            const urlStr = apiBaseUrl + `/api/datestable/DeleteEvent/` + event.eventID + `/` + event.eventType + '/';
+             const urlStr = apiBaseUrl + `/api/datestable/DeleteEvent/` + event.eventID + `/` + event.eventType + '/';
             fetch(urlStr)
                 .then(
                     response => response.json(),
@@ -201,9 +202,12 @@ export default class TestApi extends React.Component {
 
     updateEvent() {
         const { event, selectedDurationOption, selectedWorkTypeOption, selectedHolTypeOption } = this.state;
+        if (event === null) { return; }
+        if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1) {
+            return;
+        }
         this.setState({ loading: true }, () => {
-            if (event === null) { return; }
-            if (selectedHolTypeOption === -1 && selectedWorkTypeOption === -1) { return; }
+
             var valueType = null;
             var eventType = 0;
             if (selectedHolTypeOption !== -1) {
@@ -377,20 +381,21 @@ export default class TestApi extends React.Component {
                         ></Select></Col>
 
                     </Row>
-                    <Row><Col >
+                    <Row><Col style={{ textAlign: 'center' }}>
                         <Button hidden={this.state.loading} style={buttonDisplay} onClick={() => this.updateEvent()}>
 
                             Update
-                                     </Button>
+                            </Button>
                         {this.state.loading ? <img width="50" height="50" src={spinnySelect} /> : null}
                     </Col>
-                        <Col>
+                        <Col style={{ textAlign: 'center' }}>
                             <Button hidden={this.state.loading} style={buttonDisplay} onClick={() => this.deleteEvent()}>
                                 Delete
-                                     </Button>
+                            </Button>
                             {this.state.loading ? <img width="50" height="50" src={spinnySelect} /> : null}
 
                         </Col>
+                        <Col></Col>
                     </Row>
 
 

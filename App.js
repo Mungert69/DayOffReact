@@ -22,7 +22,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        {selectedDate.format('DD-MM-YYYY')}
+        {selectedDate.format('MM-DD-YYYY')}
         <p className="App-float-left">
           <Calendar setDate={setDate}/>
         </p>

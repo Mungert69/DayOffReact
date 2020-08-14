@@ -204,8 +204,8 @@ export default class Calendar extends React.Component {
       () => {
         const curr = this.state.dateObject.clone().set('date',this.state.selectedDay); // get current date
         
-        const first =curr.clone().startOf('week').add(1,'days').format('DD-MM-YYYY');
-        const last = curr.clone().endOf('week').add(1,'days').format('DD-MM-YYYY');;
+        const first =curr.clone().startOf('week').add(1,'days').format('MM-DD-YYYY');
+        const last = curr.clone().endOf('week').add(1,'days').format('MM-DD-YYYY');;
       
         var firstDay = first.toString();
         var lastDay = last.toString();

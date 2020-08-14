@@ -225,12 +225,12 @@ export default class TestApi extends React.Component {
             var eventID = event.eventID;
 
             if (eventID !== -1 && eventType !== event.eventType) {
-                urlStr = apiBaseUrl + `/api/datestable/SwapEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/' + eventType + '/' + event.eventType + '/' + event.eventID + '/'
+                urlStr = apiBaseUrl + `/api/datestable/SwapEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('MM-DD-YYYY') + '/' + eventType + '/' + event.eventType + '/' + event.eventID + '/'
             }
             else {
                 if (eventID === -1) {
 
-                    urlStr = apiBaseUrl + `/api/datestable/CreateEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('DD-MM-YYYY') + '/' + eventType + '/'
+                    urlStr = apiBaseUrl + `/api/datestable/CreateEvent/` + event.userID + `/` + valueType + '/' + valueDuration + '/' + moment(this.props.selectedDate).format('MM-DD-YYYY') + '/' + eventType + '/'
 
                 }
                 else {
@@ -347,10 +347,10 @@ export default class TestApi extends React.Component {
             });
             return (
                 <span> <Row>
-                    <Col ><a o style={{ color: 'blue' }} onClick={() => this.props.setHiddenCal(!this.props.hiddenCal)} >Calendar</a></Col>
-                    <Col ><a o style={{ color: 'blue' }} onClick={() => this.props.setHiddenWeekDays(!this.props.hiddenWeekDays)} >Work For Week</a></Col>
+                    <Col ><a  style={{ color: 'blue' }} onClick={() => this.props.setHiddenCal(!this.props.hiddenCal)} >Calendar</a></Col>
+                    <Col ><a  style={{ color: 'blue' }} onClick={() => this.props.setHiddenWeekDays(!this.props.hiddenWeekDays)} >Work For Week</a></Col>
 
-                    <Col style={dateDisplay}><span >Selected Date : {this.props.selectedDate.format('DD-MM-YYYY')}</span></Col>
+                    <Col style={dateDisplay}><span >Selected Date : {this.props.selectedDate.format('MM-DD-YYYY')}</span></Col>
                     <Col >Selected User :<span style={fontStyle}> {selectedUser.firstName}</span></Col>
                 </Row>
                     <Row><Col><ResultComp handleResultClick={this.handleResultClick} result={result}></ResultComp></Col></Row>

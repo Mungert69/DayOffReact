@@ -15,8 +15,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   const currMinus = moment().add(-1, 'days'); // get current date
   const curr= moment();
-  const first = currMinus.clone().startOf('week').add(1, 'days').format('DD-MM-YYYY');
-  const last = currMinus.clone().endOf('week').add(1, 'days').format('DD-MM-YYYY');;
+  const first = currMinus.clone().startOf('week').add(1, 'days').format('MM-DD-YYYY');
+  const last = currMinus.clone().endOf('week').add(1, 'days').format('MM-DD-YYYY');;
 
   const [selectedDate, setSelectedDate] = useState(curr);
   const [fromDate, setFromDate] = useState(first);
@@ -48,8 +48,8 @@ function App() {
 
     const currMinus = moment(d).add(-1, 'days'); // get current date
     const curr= moment(d);
-    const first = currMinus.clone().startOf('week').add(1, 'days').format('DD-MM-YYYY');
-    const last = currMinus.clone().endOf('week').add(1, 'days').format('DD-MM-YYYY');;
+    const first = currMinus.clone().startOf('week').add(1, 'days').format('MM-DD-YYYY');
+    const last = currMinus.clone().endOf('week').add(1, 'days').format('MM-DD-YYYY');;
 
     var firstDay = first.toString();
     var lastDay = last.toString();
@@ -67,7 +67,7 @@ function App() {
           rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous"
+          crossOrigin="anonymous"
         />
         <Container>
 

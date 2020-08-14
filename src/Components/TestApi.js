@@ -8,7 +8,7 @@ import UserContractInfo from './UserContractInfo';
 import Spinny from './Spinny.gif'; // with import
 
 
-const apiBaseUrl = 'http://192.168.1.20:10202';
+const apiBaseUrl = 'https://daysoffservice.azurewebsites.net';
 
 const fontStyle = { color: 'green' };
 const customStyles = {

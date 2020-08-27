@@ -8,7 +8,7 @@ import UserContractInfo from './UserContractInfo';
 import Spinny from './Spinny.gif'; // with import
 
 
-const apiBaseUrl = 'http://mahadevaprojectswebapp.azurewebsites.net/';
+const apiBaseUrl = 'https://mahadevaprojectswebapp.azurewebsites.net/';
 
 const fontStyle = { color: 'green' };
 const customStyles = {

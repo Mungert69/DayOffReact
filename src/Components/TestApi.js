@@ -8,7 +8,7 @@ import UserContractInfo from './UserContractInfo';
 import Spinny from './Spinny.gif'; // with import
 
 
-const apiBaseUrl = 'https://heartiq.hopto.org:65125/';
+const apiBaseUrl = 'http://heartiq.hopto.org:65125/';
 
 const fontStyle = { color: 'green' };
 const customStyles = {
